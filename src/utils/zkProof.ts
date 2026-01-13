@@ -1,75 +1,82 @@
-// This file handles the zero-knowledge proof generation and verification
-// For the MVP, we'll use a pre-compiled circuit and keys
+// This file handles real zero-knowledge proof generation and verification using snarkjs
 
-// import * as snarkjs from 'snarkjs'
-// Note: snarkjs will be used once we have compiled circuit files
+import * as snarkjs from 'snarkjs'
 
-// For the MVP, we'll generate the proof directly using snarkjs
-// In a production app, you'd load pre-compiled circuit files
+// Cache for loaded files to avoid re-fetching
+let vKeyCache: any = null
 
-export async function generateProof() {
+// Load verification key from public directory
+async function loadVerificationKey() {
+  if (vKeyCache) return vKeyCache
+
+  const response = await fetch('/verification_key.json')
+  if (!response.ok) {
+    throw new Error('Failed to load verification key')
+  }
+  vKeyCache = await response.json()
+  return vKeyCache
+}
+
+/**
+ * Generate a real zero-knowledge proof using snarkjs
+ * @param xValue - The secret value to prove (x where x² = out)
+ * @returns Proof data with proof and public signals
+ */
+export async function generateProof(xValue: number = 3) {
   try {
-    // Our witness: x = 3, and we want to prove x * x = 9
     const input = {
-      x: 3
+      x: xValue
     }
 
-    console.log('Generating proof with input:', input)
+    console.log('Generating ZK proof with input:', input)
+    console.log('Expected output:', xValue * xValue)
 
-    // Note: For the MVP, we need to either:
-    // 1. Use a pre-compiled circuit (WASM + zkey files)
-    // 2. Or show a simplified simulation
+    // Load circuit WASM and zkey from public directory
+    const { proof, publicSignals } = await snarkjs.groth16.fullProve(
+      input,
+      '/square.wasm',
+      '/square_final.zkey'
+    )
 
-    // For now, we'll create a mock proof structure to demonstrate the flow
-    // In the next phase, we'll compile the actual circuit
+    console.log('Proof generated successfully!')
+    console.log('Public signals (output):', publicSignals)
+    console.log('Proof:', proof)
 
-    const mockProof = {
-      proof: {
-        pi_a: ["1234..."],
-        pi_b: [["5678..."], ["9012..."]],
-        pi_c: ["3456..."],
-        protocol: "groth16",
-        curve: "bn128"
-      },
-      publicSignals: ["9"] // The public output: x^2 = 9
+    return {
+      proof,
+      publicSignals
     }
-
-    // Simulate processing time
-    await new Promise(resolve => setTimeout(resolve, 1500))
-
-    console.log('Proof generated:', mockProof)
-
-    return mockProof
   } catch (error) {
     console.error('Error generating proof:', error)
-    throw new Error('Failed to generate proof. In the MVP, we need to set up the circuit files.')
+    throw new Error(`Failed to generate proof: ${error instanceof Error ? error.message : 'Unknown error'}`)
   }
 }
 
+/**
+ * Verify a zero-knowledge proof using snarkjs
+ * @param proofData - The proof data containing proof and public signals
+ * @returns Boolean indicating if the proof is valid
+ */
 export async function verifyProof(proofData: any) {
   try {
-    console.log('Verifying proof:', proofData)
+    console.log('Verifying proof...')
+    console.log('Public signals:', proofData.publicSignals)
 
-    // Simulate verification time
-    await new Promise(resolve => setTimeout(resolve, 800))
+    // Load the verification key
+    const vKey = await loadVerificationKey()
 
-    // For the mock proof, always return true
-    // In production, this would use snarkjs.groth16.verify()
-
-    const isValid = true
+    // Verify the proof using snarkjs
+    const isValid = await snarkjs.groth16.verify(
+      vKey,
+      proofData.publicSignals,
+      proofData.proof
+    )
 
     console.log('Verification result:', isValid)
 
     return isValid
   } catch (error) {
     console.error('Error verifying proof:', error)
-    throw new Error('Failed to verify proof')
+    throw new Error(`Failed to verify proof: ${error instanceof Error ? error.message : 'Unknown error'}`)
   }
-}
-
-// Helper function to load circuit files (to be implemented)
-export async function loadCircuitFiles() {
-  // This will load the WASM and zkey files
-  // For MVP, we'll need to compile the circuit first
-  console.log('Circuit files would be loaded here')
 }

@@ -1,9 +1,11 @@
 interface StepWitnessProps {
   onNext: () => void
   onPrevious: () => void
+  xValue: number
 }
 
-export default function StepWitness({ onNext, onPrevious }: StepWitnessProps) {
+export default function StepWitness({ onNext, onPrevious, xValue }: StepWitnessProps) {
+  const output = xValue * xValue
   return (
     <div>
       <h2 className="text-3xl font-bold text-gray-800 mb-6">Step 4: The Witness</h2>
@@ -23,7 +25,7 @@ export default function StepWitness({ onNext, onPrevious }: StepWitnessProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-yellow-50 border-2 border-yellow-300 p-4 rounded-lg">
             <p className="text-sm text-yellow-700 font-semibold mb-2">🔒 PRIVATE</p>
-            <p className="font-mono text-xl text-yellow-900 mb-1">x = 3</p>
+            <p className="font-mono text-xl text-yellow-900 mb-1">x = {xValue}</p>
             <p className="text-sm text-yellow-700">
               This value is secret and will never be revealed
             </p>
@@ -31,7 +33,7 @@ export default function StepWitness({ onNext, onPrevious }: StepWitnessProps) {
 
           <div className="bg-green-50 border-2 border-green-300 p-4 rounded-lg">
             <p className="text-sm text-green-700 font-semibold mb-2">🔓 PUBLIC</p>
-            <p className="font-mono text-xl text-green-900 mb-1">out = 9</p>
+            <p className="font-mono text-xl text-green-900 mb-1">out = {output}</p>
             <p className="text-sm text-green-700">
               This value is public and known to everyone
             </p>
@@ -41,7 +43,7 @@ export default function StepWitness({ onNext, onPrevious }: StepWitnessProps) {
         <div className="mt-6 bg-blue-50 p-4 rounded-lg">
           <p className="text-blue-900 font-semibold mb-2">Verification:</p>
           <p className="font-mono text-blue-800">
-            3 × 3 = 9 ✓
+            {xValue} × {xValue} = {output} ✓
           </p>
           <p className="text-sm text-blue-700 mt-2">
             The witness satisfies all constraints!

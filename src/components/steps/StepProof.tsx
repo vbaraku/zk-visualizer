@@ -5,9 +5,10 @@ interface StepProofProps {
   onNext: () => void
   onPrevious: () => void
   setProofData: (data: any) => void
+  xValue: number
 }
 
-export default function StepProof({ onNext, onPrevious, setProofData }: StepProofProps) {
+export default function StepProof({ onNext, onPrevious, setProofData, xValue }: StepProofProps) {
   const [isGenerating, setIsGenerating] = useState(false)
   const [proofGenerated, setProofGenerated] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -17,7 +18,7 @@ export default function StepProof({ onNext, onPrevious, setProofData }: StepProo
     setError(null)
 
     try {
-      const result = await generateProof()
+      const result = await generateProof(xValue)
       setProofData(result)
       setProofGenerated(true)
     } catch (err) {

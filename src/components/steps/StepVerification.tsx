@@ -4,9 +4,11 @@ import { verifyProof } from '../../utils/zkProof'
 interface StepVerificationProps {
   onPrevious: () => void
   proofData: any
+  xValue: number
 }
 
 export default function StepVerification({ onPrevious, proofData }: StepVerificationProps) {
+  // xValue can be used to show expected output in verification
   const [isVerifying, setIsVerifying] = useState(false)
   const [verificationResult, setVerificationResult] = useState<boolean | null>(null)
   const [error, setError] = useState<string | null>(null)

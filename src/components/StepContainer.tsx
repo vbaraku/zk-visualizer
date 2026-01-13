@@ -11,13 +11,17 @@ interface StepContainerProps {
   setCurrentStep: (step: Step) => void
   proofData: any
   setProofData: (data: any) => void
+  xValue: number
+  setXValue: (value: number) => void
 }
 
 export default function StepContainer({
   currentStep,
   setCurrentStep,
   proofData,
-  setProofData
+  setProofData,
+  xValue,
+  setXValue
 }: StepContainerProps) {
   const currentStepInfo = STEPS.find(s => s.id === currentStep)!
 
@@ -38,17 +42,17 @@ export default function StepContainer({
   const renderStep = () => {
     switch (currentStep) {
       case 'problem':
-        return <StepProblem onNext={handleNext} />
+        return <StepProblem onNext={handleNext} xValue={xValue} setXValue={setXValue} />
       case 'circuit':
-        return <StepCircuit onNext={handleNext} onPrevious={handlePrevious} />
+        return <StepCircuit onNext={handleNext} onPrevious={handlePrevious} xValue={xValue} />
       case 'constraints':
-        return <StepConstraints onNext={handleNext} onPrevious={handlePrevious} />
+        return <StepConstraints onNext={handleNext} onPrevious={handlePrevious} xValue={xValue} />
       case 'witness':
-        return <StepWitness onNext={handleNext} onPrevious={handlePrevious} />
+        return <StepWitness onNext={handleNext} onPrevious={handlePrevious} xValue={xValue} />
       case 'proof':
-        return <StepProof onNext={handleNext} onPrevious={handlePrevious} setProofData={setProofData} />
+        return <StepProof onNext={handleNext} onPrevious={handlePrevious} setProofData={setProofData} xValue={xValue} />
       case 'verification':
-        return <StepVerification onPrevious={handlePrevious} proofData={proofData} />
+        return <StepVerification onPrevious={handlePrevious} proofData={proofData} xValue={xValue} />
       default:
         return null
     }
