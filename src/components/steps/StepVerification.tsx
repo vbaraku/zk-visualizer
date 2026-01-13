@@ -5,10 +5,12 @@ interface StepVerificationProps {
   onPrevious: () => void
   proofData: any
   xValue: number
+  targetOutput: number
 }
 
-export default function StepVerification({ onPrevious, proofData, xValue }: StepVerificationProps) {
-  const output = xValue * xValue
+export default function StepVerification({ onPrevious, proofData, xValue, targetOutput }: StepVerificationProps) {
+  const userOutput = xValue * xValue
+  const isCorrect = userOutput === targetOutput
   const [isVerifying, setIsVerifying] = useState(false)
   const [verificationResult, setVerificationResult] = useState<boolean | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -29,7 +31,7 @@ export default function StepVerification({ onPrevious, proofData, xValue }: Step
 
       // If tampering, modify the public signals to a wrong value
       if (tamper) {
-        const wrongOutput = output + 1 // Wrong output value
+        const wrongOutput = targetOutput + 1 // Wrong targetOutput value
         dataToVerify = {
           ...proofData,
           publicSignals: [wrongOutput.toString()]
@@ -64,7 +66,7 @@ export default function StepVerification({ onPrevious, proofData, xValue }: Step
           <h4 className="font-semibold text-gray-800 mb-2">What the Verifier Knows</h4>
           <div className="bg-blue-50 p-4 rounded-lg">
             <ul className="list-disc list-inside space-y-2 text-blue-900">
-              <li>The public output: <code className="bg-blue-100 px-2 py-1 rounded">out = {output}</code></li>
+              <li>The target challenge: <code className="bg-blue-100 px-2 py-1 rounded">x² must equal {targetOutput}</code></li>
               <li>The circuit structure (what computation was performed)</li>
               <li>The cryptographic proof</li>
             </ul>
@@ -74,6 +76,11 @@ export default function StepVerification({ onPrevious, proofData, xValue }: Step
                 <code className="text-xs bg-blue-100 px-2 py-1 rounded block">
                   {JSON.stringify(proofData.publicSignals)}
                 </code>
+                <p className="text-xs text-blue-600 mt-1">
+                  {isCorrect
+                    ? `✓ Proof claims targetOutput = ${userOutput}, which matches the target ${targetOutput}`
+                    : `⚠ Your guess x=${xValue} gives ${userOutput}, but the target is ${targetOutput}`}
+                </p>
               </div>
             )}
           </div>
@@ -99,7 +106,7 @@ export default function StepVerification({ onPrevious, proofData, xValue }: Step
           <ul className="list-disc list-inside space-y-1 text-gray-600 ml-4 mt-2">
             <li>The prover actually knows a valid witness</li>
             <li>The witness satisfies all the constraints</li>
-            <li>The public outputs match</li>
+            <li>The public targetOutputs match</li>
           </ul>
         </div>
       </div>
@@ -146,7 +153,7 @@ export default function StepVerification({ onPrevious, proofData, xValue }: Step
                 )}
               </button>
               <p className="text-xs text-gray-500 mt-2">
-                The tampered test changes the public output to {output + 1}, causing verification to fail
+                The tampered test changes the public targetOutput to {targetOutput + 1}, causing verification to fail
               </p>
             </div>
           )}
@@ -157,12 +164,12 @@ export default function StepVerification({ onPrevious, proofData, xValue }: Step
               <h4 className="text-2xl font-bold text-green-900 mb-3">Proof Verified!</h4>
               <p className="text-green-700 text-lg mb-4">
                 The proof is valid! The verifier is now convinced that the prover knows
-                a number x where x² = {output}.
+                a number x where x² = {targetOutput}.
               </p>
               <div className="bg-white p-4 rounded-lg border border-green-200">
                 <p className="text-sm text-gray-600 mb-2">What was proven:</p>
                 <p className="font-semibold text-gray-800">
-                  "I know a secret number that, when squared, equals {output}"
+                  "I know a secret number that, when squared, equals {targetOutput}"
                 </p>
                 <p className="text-sm text-gray-600 mt-3">What was NOT revealed:</p>
                 <p className="font-semibold text-gray-800">
@@ -184,18 +191,18 @@ export default function StepVerification({ onPrevious, proofData, xValue }: Step
               <div className="text-4xl mb-3">✗</div>
               <h4 className="text-xl font-semibold text-red-900 mb-2">Verification Failed!</h4>
               <p className="text-red-700 mb-4">
-                The proof is invalid! {isTampered ? 'This is expected - we tampered with the public signals.' : 'This means the proof does not match the claimed output.'}
+                The proof is invalid! {isTampered ? 'This is expected - we tampered with the public signals.' : 'This means the proof does not match the claimed targetOutput.'}
               </p>
               {isTampered && (
                 <div className="bg-white p-4 rounded-lg border border-red-200">
                   <p className="text-sm text-gray-600 mb-2">What happened:</p>
                   <p className="text-gray-800">
-                    The proof was generated for output = <code className="bg-gray-100 px-2 py-1 rounded">{output}</code>,
-                    but we tried to verify it with output = <code className="bg-gray-100 px-2 py-1 rounded">{output + 1}</code>.
+                    The proof was generated for targetOutput = <code className="bg-gray-100 px-2 py-1 rounded">{targetOutput}</code>,
+                    but we tried to verify it with targetOutput = <code className="bg-gray-100 px-2 py-1 rounded">{targetOutput + 1}</code>.
                   </p>
                   <p className="text-sm text-gray-600 mt-3">
                     This demonstrates that ZK proofs are cryptographically secure - you cannot modify the
-                    public outputs without invalidating the proof!
+                    public targetOutputs without invalidating the proof!
                   </p>
                 </div>
               )}

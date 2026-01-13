@@ -1,11 +1,11 @@
 interface StepCircuitProps {
   onNext: () => void
   onPrevious: () => void
-  xValue: number
+  targetOutput: number
 }
 
 export default function StepCircuit({ onNext, onPrevious }: StepCircuitProps) {
-  // xValue can be used here to make the circuit dynamic in future
+  // Circuit explains the structure for proving x² = 9 (fixed target)
   return (
     <div>
       <h2 className="text-3xl font-bold text-gray-800 mb-6">Step 2: The Circuit</h2>

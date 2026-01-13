@@ -6,14 +6,24 @@ interface StepProofProps {
   onPrevious: () => void
   setProofData: (data: any) => void
   xValue: number
+  targetOutput: number
 }
 
-export default function StepProof({ onNext, onPrevious, setProofData, xValue }: StepProofProps) {
+export default function StepProof({ onNext, onPrevious, setProofData, xValue, targetOutput }: StepProofProps) {
   const [isGenerating, setIsGenerating] = useState(false)
   const [proofGenerated, setProofGenerated] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const userOutput = xValue * xValue
+  const isCorrect = userOutput === targetOutput
+
   const handleGenerateProof = async () => {
+    // Check if the user has the correct answer
+    if (!isCorrect) {
+      setError(`Cannot generate proof! Your guess x = ${xValue} is incorrect (${xValue}² = ${userOutput}, not ${targetOutput}). You can only prove something if you actually know a valid answer. Go back and try 3 or -3.`)
+      return
+    }
+
     setIsGenerating(true)
     setError(null)
 

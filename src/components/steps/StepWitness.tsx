@@ -2,10 +2,13 @@ interface StepWitnessProps {
   onNext: () => void
   onPrevious: () => void
   xValue: number
+  targetOutput: number
 }
 
-export default function StepWitness({ onNext, onPrevious, xValue }: StepWitnessProps) {
-  const output = xValue * xValue
+export default function StepWitness({ onNext, onPrevious, xValue, targetOutput }: StepWitnessProps) {
+  const userOutput = xValue * xValue
+  const isCorrect = userOutput === targetOutput
+
   return (
     <div>
       <h2 className="text-3xl font-bold text-gray-800 mb-6">Step 4: The Witness</h2>
@@ -20,7 +23,7 @@ export default function StepWitness({ onNext, onPrevious, xValue }: StepWitnessP
       </div>
 
       <div className="bg-white border-2 border-gray-200 rounded-lg p-6 mb-6">
-        <h4 className="font-semibold text-gray-800 mb-4">Our Witness:</h4>
+        <h4 className="font-semibold text-gray-800 mb-4">Your Witness:</h4>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-yellow-50 border-2 border-yellow-300 p-4 rounded-lg">
@@ -32,21 +35,25 @@ export default function StepWitness({ onNext, onPrevious, xValue }: StepWitnessP
           </div>
 
           <div className="bg-green-50 border-2 border-green-300 p-4 rounded-lg">
-            <p className="text-sm text-green-700 font-semibold mb-2">🔓 PUBLIC</p>
-            <p className="font-mono text-xl text-green-900 mb-1">out = {output}</p>
+            <p className="text-sm text-green-700 font-semibold mb-2">🔓 PUBLIC (Target)</p>
+            <p className="font-mono text-xl text-green-900 mb-1">out = {targetOutput}</p>
             <p className="text-sm text-green-700">
-              This value is public and known to everyone
+              This is the challenge value everyone knows
             </p>
           </div>
         </div>
 
-        <div className="mt-6 bg-blue-50 p-4 rounded-lg">
-          <p className="text-blue-900 font-semibold mb-2">Verification:</p>
-          <p className="font-mono text-blue-800">
-            {xValue} × {xValue} = {output} ✓
+        <div className={`mt-6 p-4 rounded-lg ${isCorrect ? 'bg-green-50' : 'bg-red-50'}`}>
+          <p className={`font-semibold mb-2 ${isCorrect ? 'text-green-900' : 'text-red-900'}`}>
+            {isCorrect ? '✓ Witness Check:' : '✗ Witness Check:'}
           </p>
-          <p className="text-sm text-blue-700 mt-2">
-            The witness satisfies all constraints!
+          <p className={`font-mono ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+            {xValue} × {xValue} = {userOutput} {isCorrect ? '=' : '≠'} {targetOutput}
+          </p>
+          <p className={`text-sm mt-2 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+            {isCorrect
+              ? 'The witness satisfies all constraints! You can generate a valid proof.'
+              : `The witness does NOT satisfy the constraints (${userOutput} ≠ ${targetOutput}). Proof generation will fail.`}
           </p>
         </div>
       </div>

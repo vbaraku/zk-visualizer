@@ -1,11 +1,11 @@
 interface StepConstraintsProps {
   onNext: () => void
   onPrevious: () => void
-  xValue: number
+  targetOutput: number
 }
 
 export default function StepConstraints({ onNext, onPrevious }: StepConstraintsProps) {
-  // xValue can be used here to make constraints dynamic in future
+  // Constraints explain the rules for proving x² = 9 (fixed target)
   return (
     <div>
       <h2 className="text-3xl font-bold text-gray-800 mb-6">Step 3: The Constraints</h2>

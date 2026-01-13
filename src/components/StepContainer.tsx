@@ -13,6 +13,7 @@ interface StepContainerProps {
   setProofData: (data: any) => void
   xValue: number
   setXValue: (value: number) => void
+  targetOutput: number
 }
 
 export default function StepContainer({
@@ -21,7 +22,8 @@ export default function StepContainer({
   proofData,
   setProofData,
   xValue,
-  setXValue
+  setXValue,
+  targetOutput
 }: StepContainerProps) {
   const currentStepInfo = STEPS.find(s => s.id === currentStep)!
 
@@ -42,17 +44,17 @@ export default function StepContainer({
   const renderStep = () => {
     switch (currentStep) {
       case 'problem':
-        return <StepProblem onNext={handleNext} xValue={xValue} setXValue={setXValue} />
+        return <StepProblem onNext={handleNext} xValue={xValue} setXValue={setXValue} targetOutput={targetOutput} />
       case 'circuit':
-        return <StepCircuit onNext={handleNext} onPrevious={handlePrevious} xValue={xValue} />
+        return <StepCircuit onNext={handleNext} onPrevious={handlePrevious} targetOutput={targetOutput} />
       case 'constraints':
-        return <StepConstraints onNext={handleNext} onPrevious={handlePrevious} xValue={xValue} />
+        return <StepConstraints onNext={handleNext} onPrevious={handlePrevious} targetOutput={targetOutput} />
       case 'witness':
-        return <StepWitness onNext={handleNext} onPrevious={handlePrevious} xValue={xValue} />
+        return <StepWitness onNext={handleNext} onPrevious={handlePrevious} xValue={xValue} targetOutput={targetOutput} />
       case 'proof':
-        return <StepProof onNext={handleNext} onPrevious={handlePrevious} setProofData={setProofData} xValue={xValue} />
+        return <StepProof onNext={handleNext} onPrevious={handlePrevious} setProofData={setProofData} xValue={xValue} targetOutput={targetOutput} />
       case 'verification':
-        return <StepVerification onPrevious={handlePrevious} proofData={proofData} xValue={xValue} />
+        return <StepVerification onPrevious={handlePrevious} proofData={proofData} xValue={xValue} targetOutput={targetOutput} />
       default:
         return null
     }

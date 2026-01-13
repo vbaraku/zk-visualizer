@@ -2,6 +2,9 @@ import { useState } from 'react'
 import StepContainer from './components/StepContainer'
 import { Step } from './types'
 
+// Fixed target: we're always proving "I know x where x² = 9"
+const TARGET_OUTPUT = 9
+
 function App() {
   const [currentStep, setCurrentStep] = useState<Step>('problem')
   const [proofData, setProofData] = useState<any>(null)
@@ -26,6 +29,7 @@ function App() {
           setProofData={setProofData}
           xValue={xValue}
           setXValue={setXValue}
+          targetOutput={TARGET_OUTPUT}
         />
       </div>
     </div>
