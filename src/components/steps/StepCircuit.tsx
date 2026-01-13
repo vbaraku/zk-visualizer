@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import ReactFlow, {
   Node,
   Edge,
-  Controls,
   Background,
   BackgroundVariant,
   useNodesState,
@@ -29,7 +28,6 @@ const CustomNode = ({ data }: any) => {
 
   const isPrivate = data.type === 'input'
   const isOutput = data.type === 'output'
-  const isGate = data.type === 'gate'
   const isCorrect = data.isCorrect
 
   const bgColor = isPrivate
