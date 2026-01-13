@@ -46,7 +46,7 @@ export default function StepContainer({
       case 'problem':
         return <StepProblem onNext={handleNext} xValue={xValue} setXValue={setXValue} targetOutput={targetOutput} />
       case 'circuit':
-        return <StepCircuit onNext={handleNext} onPrevious={handlePrevious} targetOutput={targetOutput} />
+        return <StepCircuit onNext={handleNext} onPrevious={handlePrevious} targetOutput={targetOutput} xValue={xValue} />
       case 'constraints':
         return <StepConstraints onNext={handleNext} onPrevious={handlePrevious} targetOutput={targetOutput} />
       case 'witness':
