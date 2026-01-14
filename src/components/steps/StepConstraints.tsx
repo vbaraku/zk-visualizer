@@ -155,8 +155,8 @@ export default function StepConstraints({ onNext, onPrevious, targetOutput, xVal
           </div>
 
           {/* Constraint Equation: (A·w) × (B·w) = (C·w) */}
-          <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-lg border-2 border-purple-200">
-            <div className="flex items-center justify-center gap-4 flex-wrap">
+          <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-8 rounded-lg border-2 border-purple-200">
+            <div className="flex items-center justify-center gap-8 flex-wrap">
               {/* Left side: A·w */}
               <div className="flex flex-col items-center">
                 <motion.div
@@ -178,7 +178,7 @@ export default function StepConstraints({ onNext, onPrevious, targetOutput, xVal
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mt-3 px-3 py-2 bg-purple-100 rounded-lg"
+                    className="mt-5 px-4 py-3 bg-purple-100 rounded-lg shadow-sm"
                   >
                     <div className="text-xs text-purple-700 mb-1">Dot product:</div>
                     <div className="font-mono text-sm text-purple-900">
@@ -223,7 +223,7 @@ export default function StepConstraints({ onNext, onPrevious, targetOutput, xVal
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mt-3 px-3 py-2 bg-blue-100 rounded-lg"
+                    className="mt-5 px-4 py-3 bg-blue-100 rounded-lg shadow-sm"
                   >
                     <div className="text-xs text-blue-700 mb-1">Dot product:</div>
                     <div className="font-mono text-sm text-blue-900">
@@ -289,7 +289,7 @@ export default function StepConstraints({ onNext, onPrevious, targetOutput, xVal
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mt-3 px-3 py-2 bg-green-100 rounded-lg"
+                    className="mt-5 px-4 py-3 bg-green-100 rounded-lg shadow-sm"
                   >
                     <div className="text-xs text-green-700 mb-1">Dot product:</div>
                     <div className="font-mono text-sm text-green-900">
@@ -308,25 +308,25 @@ export default function StepConstraints({ onNext, onPrevious, targetOutput, xVal
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`mt-6 p-4 rounded-lg border-2 ${
+                className={`mt-8 p-6 rounded-lg border-4 ${
                   isCorrect
                     ? 'bg-green-50 border-green-500'
                     : 'bg-red-50 border-red-500'
                 }`}
               >
                 <div className="text-center">
-                  <div className="text-lg font-semibold mb-2">
+                  <div className={`text-2xl font-bold mb-3 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
                     {isCorrect ? '✓ Constraint Satisfied!' : '✗ Constraint Failed!'}
                   </div>
-                  <div className="font-mono text-xl">
-                    <span className="font-bold">{productValue}</span>
-                    <span className="mx-3">{isCorrect ? '===' : '≠'}</span>
-                    <span className="font-bold">{constraintValue}</span>
+                  <div className={`font-mono text-3xl font-bold mb-3 ${isCorrect ? 'text-green-900' : 'text-red-900'}`}>
+                    <span>{productValue}</span>
+                    <span className="mx-4">{isCorrect ? '===' : '≠'}</span>
+                    <span>{constraintValue}</span>
                   </div>
-                  <div className={`text-sm mt-2 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                  <div className={`text-base font-semibold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
                     {isCorrect
                       ? `The witness satisfies the constraint! You can generate a valid proof.`
-                      : `The witness doesn't satisfy the constraint. Proof generation would fail.`
+                      : `The witness doesn't satisfy the constraint. Proof generation would fail because ${xValue}² = ${productValue}, not ${targetOutput}.`
                     }
                   </div>
                 </div>
@@ -347,7 +347,7 @@ export default function StepConstraints({ onNext, onPrevious, targetOutput, xVal
                 {getStepTitle(animationStep)}
               </div>
               <div className="text-indigo-700 text-sm">
-                {getStepExplanation(animationStep, xValue, leftValue, rightValue, productValue, constraintValue, isCorrect)}
+                {getStepExplanation(animationStep, xValue, leftValue, rightValue, productValue, constraintValue, isCorrect, targetOutput)}
               </div>
             </motion.div>
           </AnimatePresence>
@@ -476,12 +476,12 @@ function MatrixDisplay({
 
 function getStepTitle(step: AnimationStep): string {
   switch (step) {
-    case 0: return 'Step 0: Initial State'
-    case 1: return 'Step 1: Compute A·w (Left Side)'
-    case 2: return 'Step 2: Compute B·w (Right Side)'
-    case 3: return 'Step 3: Multiply Left × Right'
-    case 4: return 'Step 4: Compute C·w (Constraint Side)'
-    case 5: return 'Step 5: Verify Constraint'
+    case 0: return 'Initial State'
+    case 1: return 'Step 1: Select Left Wire'
+    case 2: return 'Step 2: Select Right Wire'
+    case 3: return 'Step 3: Multiply Wires'
+    case 4: return 'Step 4: Select Output Wire'
+    case 5: return 'Step 5: Check Equality'
     default: return ''
   }
 }
@@ -493,23 +493,24 @@ function getStepExplanation(
   rightValue: number,
   productValue: number,
   constraintValue: number,
-  isCorrect: boolean
+  isCorrect: boolean,
+  targetOutput: number
 ): string {
   switch (step) {
     case 0:
-      return `We start with the witness vector w = [1, ${xValue}, ${xValue * xValue}]. The constraint equation is (A·w) × (B·w) = (C·w). Let's see if it holds!`
+      return `The constraint equation (A·w) × (B·w) = (C·w) will check if your witness is valid.`
     case 1:
-      return `Matrix A selects the private input x. Computing the dot product: A·w = 0×1 + 1×${xValue} + 0×${xValue * xValue} = ${leftValue}`
+      return `Matrix A selects which wire to use for the LEFT side of multiplication — it picks x from the witness.`
     case 2:
-      return `Matrix B also selects x. Computing the dot product: B·w = 0×1 + 1×${xValue} + 0×${xValue * xValue} = ${rightValue}`
+      return `Matrix B selects which wire to use for the RIGHT side of multiplication — it also picks x.`
     case 3:
-      return `Now multiply the results: ${leftValue} × ${rightValue} = ${productValue}. This is x squared!`
+      return `We multiply the left and right values together: ${leftValue} × ${rightValue} = ${productValue}.`
     case 4:
-      return `Matrix C selects the output. Computing: C·w = 0×1 + 0×${xValue} + 1×${xValue * xValue} = ${constraintValue}`
+      return `Matrix C selects which wire should EQUAL the multiplication result — it picks the output wire.`
     case 5:
       return isCorrect
-        ? `Success! ${productValue} === ${constraintValue}. The constraint is satisfied because ${xValue}² equals the output. You can create a valid proof!`
-        : `Failed! ${productValue} ≠ ${constraintValue}. The constraint is NOT satisfied because ${xValue}² doesn't equal the target output. No valid proof possible.`
+        ? `The multiplication result ${productValue} EQUALS the output ${constraintValue} — constraint satisfied!`
+        : `The multiplication result ${productValue} does NOT EQUAL the output ${constraintValue} — constraint violated! (${xValue}² = ${productValue}, but we need ${targetOutput})`
     default:
       return ''
   }
