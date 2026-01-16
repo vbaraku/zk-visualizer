@@ -137,3 +137,12 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Circuit build artifacts (generated during circuit compilation)
+circuits/*.ptau
+circuits/*.r1cs
+circuits/*.sym
+circuits/*.wasm
+circuits/*.zkey
+circuits/verification_key.json
+circuits/public/
