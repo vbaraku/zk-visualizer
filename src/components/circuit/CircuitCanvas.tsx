@@ -14,7 +14,9 @@ import '@xyflow/react/dist/style.css'
 import InputNode from './nodes/InputNode'
 import GateNode from './nodes/GateNode'
 import OutputNode from './nodes/OutputNode'
+import AnimatedEdge from './edges/AnimatedEdge'
 import { CircuitDefinition } from '../../types/circuit'
+import { NodeState, EdgeState } from '../../types/animation'
 
 /**
  * CircuitCanvas - Main circuit visualization component using React Flow
@@ -27,6 +29,8 @@ interface CircuitCanvasProps {
   circuit: CircuitDefinition
   witnessValues: { [signalId: string]: number }
   targetOutput?: number
+  nodeStates?: Record<string, NodeState>
+  edgeStates?: Record<string, { state: EdgeState; showParticle: boolean }>
 }
 
 // Register custom node types
@@ -36,10 +40,17 @@ const nodeTypes = {
   output: OutputNode,
 }
 
+// Register custom edge types
+const edgeTypes = {
+  animated: AnimatedEdge,
+}
+
 export default function CircuitCanvas({
   circuit,
   witnessValues,
   targetOutput,
+  nodeStates,
+  edgeStates,
 }: CircuitCanvasProps) {
   // Build nodes from circuit definition
   const initialNodes = useMemo(() => {
@@ -61,6 +72,7 @@ export default function CircuitCanvas({
               value: value,
               description: signal.description,
               isPrivate: true,
+              nodeState: nodeStates?.[signal.id] || 'complete',
             },
           })
         } else if (signal.type === 'public') {
@@ -73,6 +85,7 @@ export default function CircuitCanvas({
               value: value,
               expectedValue: targetOutput,
               description: signal.description,
+              nodeState: nodeStates?.[signal.id] || 'complete',
             },
           })
         }
@@ -89,13 +102,14 @@ export default function CircuitCanvas({
             label: gate.type === 'mul' ? 'Multiply' : 'Add',
             operation: gate.label || (gate.type === 'mul' ? '×' : '+'),
             description: gate.type === 'mul' ? 'Multiplication gate' : 'Addition gate',
+            nodeState: nodeStates?.[gate.id] || 'complete',
           },
         })
       }
     })
 
     return nodes
-  }, [circuit, witnessValues, targetOutput])
+  }, [circuit, witnessValues, targetOutput, nodeStates])
 
   // Build edges from circuit gates
   const initialEdges = useMemo(() => {
@@ -104,8 +118,9 @@ export default function CircuitCanvas({
     circuit.gates.forEach((gate) => {
       // Connect inputs to gate
       gate.inputs.forEach((inputId, index) => {
+        const edgeId = `${inputId}-${gate.id}-${index}`
         edges.push({
-          id: `${inputId}-${gate.id}-${index}`,
+          id: edgeId,
           source: inputId,
           target: gate.id,
           targetHandle: `input-${index + 1}`,
@@ -114,16 +129,21 @@ export default function CircuitCanvas({
             stroke: '#FBBF24', // signal-private color
             strokeWidth: 3,
           },
-          type: ConnectionLineType.SmoothStep,
+          type: 'animated',
+          data: {
+            edgeState: edgeStates?.[edgeId]?.state || 'idle',
+            showParticle: edgeStates?.[edgeId]?.showParticle || false,
+          },
         })
       })
 
       // Connect gate to output
       const outputValue = witnessValues[gate.output]
       const isCorrect = targetOutput === undefined || outputValue === targetOutput
+      const edgeId = `${gate.id}-${gate.output}`
 
       edges.push({
-        id: `${gate.id}-${gate.output}`,
+        id: edgeId,
         source: gate.id,
         target: gate.output,
         animated: true,
@@ -131,12 +151,16 @@ export default function CircuitCanvas({
           stroke: isCorrect ? '#22C55E' : '#EF4444', // success or error
           strokeWidth: 3,
         },
-        type: ConnectionLineType.SmoothStep,
+        type: 'animated',
+        data: {
+          edgeState: edgeStates?.[edgeId]?.state || 'idle',
+          showParticle: edgeStates?.[edgeId]?.showParticle || false,
+        },
       })
     })
 
     return edges
-  }, [circuit, witnessValues, targetOutput])
+  }, [circuit, witnessValues, targetOutput, edgeStates])
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
@@ -155,6 +179,7 @@ export default function CircuitCanvas({
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         fitView
         minZoom={0.5}
         maxZoom={1.5}

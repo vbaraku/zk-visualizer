@@ -56,3 +56,6 @@ export const STEPS: StepInfo[] = [
 
 // Re-export circuit types
 export * from './circuit'
+
+// Re-export animation types
+export * from './animation'
