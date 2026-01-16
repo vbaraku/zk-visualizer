@@ -59,3 +59,6 @@ export * from './circuit'
 
 // Re-export animation types
 export * from './animation'
+
+// Re-export R1CS types
+export * from './r1cs'
