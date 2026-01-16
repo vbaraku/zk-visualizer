@@ -2,6 +2,7 @@ import { Step, STEPS } from '../types'
 import StepProblem from './steps/StepProblem'
 import StepCircuit from './steps/StepCircuit'
 import StepConstraints from './steps/StepConstraints'
+import StepPolynomials from './steps/StepPolynomials'
 import StepWitness from './steps/StepWitness'
 import StepProof from './steps/StepProof'
 import StepVerification from './steps/StepVerification'
@@ -67,6 +68,14 @@ export default function StepContainer({
             onNext={handleNext}
             onPrevious={handlePrevious}
             targetOutput={targetOutput}
+            xValue={xValue}
+          />
+        )
+      case 'polynomials':
+        return (
+          <StepPolynomials
+            onNext={handleNext}
+            onPrevious={handlePrevious}
             xValue={xValue}
           />
         )

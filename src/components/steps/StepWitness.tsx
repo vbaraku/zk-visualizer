@@ -132,7 +132,7 @@ export default function StepWitness({
           onClick={onPrevious}
           className="bg-surface text-text-primary border-2 border-border-subtle px-6 py-3 rounded-lg font-semibold hover:bg-slate-700 transition-colors"
         >
-          ← Previous
+          ← Previous: Polynomials
         </button>
         <button
           onClick={onNext}

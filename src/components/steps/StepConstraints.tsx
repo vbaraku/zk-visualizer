@@ -107,7 +107,7 @@ export default function StepConstraints({
           onClick={onNext}
           className="bg-accent-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-600 transition-colors"
         >
-          Next: Witness →
+          Next: Polynomials →
         </button>
       </div>
     </div>
