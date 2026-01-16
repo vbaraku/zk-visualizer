@@ -23,9 +23,9 @@ export default function StepContainer({
   setProofData,
   xValue,
   setXValue,
-  targetOutput
+  targetOutput,
 }: StepContainerProps) {
-  const currentStepInfo = STEPS.find(s => s.id === currentStep)!
+  const currentStepInfo = STEPS.find((s) => s.id === currentStep)!
 
   const handleNext = () => {
     const nextIndex = currentStepInfo.order
@@ -44,17 +44,60 @@ export default function StepContainer({
   const renderStep = () => {
     switch (currentStep) {
       case 'problem':
-        return <StepProblem onNext={handleNext} xValue={xValue} setXValue={setXValue} targetOutput={targetOutput} />
+        return (
+          <StepProblem
+            onNext={handleNext}
+            xValue={xValue}
+            setXValue={setXValue}
+            targetOutput={targetOutput}
+          />
+        )
       case 'circuit':
-        return <StepCircuit onNext={handleNext} onPrevious={handlePrevious} targetOutput={targetOutput} xValue={xValue} />
+        return (
+          <StepCircuit
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+            targetOutput={targetOutput}
+            xValue={xValue}
+          />
+        )
       case 'constraints':
-        return <StepConstraints onNext={handleNext} onPrevious={handlePrevious} targetOutput={targetOutput} xValue={xValue} />
+        return (
+          <StepConstraints
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+            targetOutput={targetOutput}
+            xValue={xValue}
+          />
+        )
       case 'witness':
-        return <StepWitness onNext={handleNext} onPrevious={handlePrevious} xValue={xValue} targetOutput={targetOutput} />
+        return (
+          <StepWitness
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+            xValue={xValue}
+            targetOutput={targetOutput}
+          />
+        )
       case 'proof':
-        return <StepProof onNext={handleNext} onPrevious={handlePrevious} setProofData={setProofData} xValue={xValue} targetOutput={targetOutput} />
+        return (
+          <StepProof
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+            setProofData={setProofData}
+            xValue={xValue}
+            targetOutput={targetOutput}
+          />
+        )
       case 'verification':
-        return <StepVerification onPrevious={handlePrevious} proofData={proofData} xValue={xValue} targetOutput={targetOutput} />
+        return (
+          <StepVerification
+            onPrevious={handlePrevious}
+            proofData={proofData}
+            xValue={xValue}
+            targetOutput={targetOutput}
+          />
+        )
       default:
         return null
     }
@@ -71,20 +114,22 @@ export default function StepContainer({
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all ${
                     step.order <= currentStepInfo.order
-                      ? 'bg-indigo-600 text-white'
-                      : 'bg-gray-300 text-gray-600'
+                      ? 'bg-accent-primary text-white'
+                      : 'bg-surface text-text-secondary border-2 border-border-subtle'
                   }`}
                 >
                   {step.order}
                 </div>
-                <span className="text-xs mt-2 text-center text-gray-600 hidden sm:block">
+                <span className="text-xs mt-2 text-center text-text-secondary hidden sm:block">
                   {step.title}
                 </span>
               </div>
               {index < STEPS.length - 1 && (
                 <div
                   className={`h-1 flex-1 mx-2 rounded transition-all ${
-                    step.order < currentStepInfo.order ? 'bg-indigo-600' : 'bg-gray-300'
+                    step.order < currentStepInfo.order
+                      ? 'bg-accent-primary'
+                      : 'bg-border-subtle'
                   }`}
                 />
               )}
@@ -94,7 +139,7 @@ export default function StepContainer({
       </div>
 
       {/* Step content */}
-      <div className="bg-white rounded-lg shadow-xl p-8">
+      <div className="bg-surface rounded-lg shadow-xl p-8 border border-border-subtle">
         {renderStep()}
       </div>
     </div>

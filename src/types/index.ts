@@ -53,3 +53,6 @@ export const STEPS: StepInfo[] = [
     order: 6
   }
 ]
+
+// Re-export circuit types
+export * from './circuit'

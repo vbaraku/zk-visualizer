@@ -9,7 +9,7 @@ let vKeyCache: any = null
 async function loadVerificationKey() {
   if (vKeyCache) return vKeyCache
 
-  const response = await fetch('/verification_key.json')
+  const response = await fetch('/circuits/square/verification_key.json')
   if (!response.ok) {
     throw new Error('Failed to load verification key')
   }
@@ -34,8 +34,8 @@ export async function generateProof(xValue: number = 3) {
     // Load circuit WASM and zkey from public directory
     const { proof, publicSignals } = await snarkjs.groth16.fullProve(
       input,
-      '/square.wasm',
-      '/square_final.zkey'
+      '/circuits/square/square.wasm',
+      '/circuits/square/square_final.zkey'
     )
 
     console.log('Proof generated successfully!')

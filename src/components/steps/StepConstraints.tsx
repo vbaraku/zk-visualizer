@@ -68,55 +68,55 @@ export default function StepConstraints({ onNext, onPrevious, targetOutput, xVal
 
   return (
     <div>
-      <h2 className="text-3xl font-bold text-gray-800 mb-6">Step 3: The Constraints</h2>
+      <h2 className="text-3xl font-bold text-text-primary mb-6">Step 3: The Constraints</h2>
 
-      <div className="bg-pink-50 border-l-4 border-pink-600 p-6 mb-6">
-        <h3 className="text-xl font-semibold text-pink-900 mb-3">
+      <div className="bg-accent-secondary/10 border-l-4 border-accent-secondary p-6 mb-6">
+        <h3 className="text-xl font-semibold text-text-primary mb-3">
           R1CS: Rank-1 Constraint System
         </h3>
-        <p className="text-pink-800">
+        <p className="text-text-primary">
           ZK circuits are represented as R1CS constraints. Each constraint has the form:
-          <code className="bg-pink-100 px-2 py-1 rounded ml-2 font-mono">(A·w) × (B·w) = (C·w)</code>
+          <code className="bg-surface px-2 py-1 rounded ml-2 font-mono border border-border-subtle">(A·w) × (B·w) = (C·w)</code>
         </p>
-        <p className="text-pink-700 mt-2 text-sm">
+        <p className="text-text-secondary mt-2 text-sm">
           Watch how your witness values flow through the constraint system below!
         </p>
       </div>
 
       {/* R1CS Visualization */}
-      <div className="bg-white border-2 border-gray-200 rounded-lg p-6 mb-6">
-        <h4 className="font-semibold text-gray-800 mb-4">Interactive R1CS Visualization:</h4>
+      <div className="bg-surface border-2 border-border-subtle rounded-lg p-6 mb-6">
+        <h4 className="font-semibold text-text-primary mb-4">Interactive R1CS Visualization:</h4>
 
         {/* Animation Controls */}
-        <div className="flex items-center justify-center gap-3 mb-6 p-4 bg-gray-50 rounded-lg">
+        <div className="flex items-center justify-center gap-3 mb-6 p-4 bg-surface rounded-lg border border-border-subtle">
           <button
             onClick={handleReset}
             disabled={isPlaying}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded font-semibold hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 bg-surface text-text-primary rounded font-semibold hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-2 border-border-subtle"
           >
             ↺ Reset
           </button>
           <button
             onClick={handleStepBack}
             disabled={isPlaying || animationStep === 0}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded font-semibold hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 bg-surface text-text-primary rounded font-semibold hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-2 border-border-subtle"
           >
             ← Step Back
           </button>
           <button
             onClick={isPlaying ? () => setIsPlaying(false) : handlePlay}
-            className="px-6 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
+            className="px-6 py-2 bg-accent-primary text-white rounded-lg font-semibold hover:bg-indigo-600 transition-colors"
           >
             {isPlaying ? '⏸ Pause' : '▶ Play Animation'}
           </button>
           <button
             onClick={handleStepForward}
             disabled={isPlaying || animationStep === 5}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded font-semibold hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 bg-surface text-text-primary rounded font-semibold hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-2 border-border-subtle"
           >
             Step Forward →
           </button>
-          <div className="ml-4 px-4 py-2 bg-indigo-50 rounded font-mono text-indigo-900">
+          <div className="ml-4 px-4 py-2 bg-accent-primary/10 border border-accent-primary rounded font-mono text-text-primary">
             Step {animationStep}/5
           </div>
         </div>
@@ -126,14 +126,14 @@ export default function StepConstraints({ onNext, onPrevious, targetOutput, xVal
           {/* Witness Vector */}
           <div className="flex items-center justify-center">
             <div className="text-center">
-              <div className="text-sm font-semibold text-gray-600 mb-2">Witness Vector (w)</div>
+              <div className="text-sm font-semibold text-text-secondary mb-2">Witness Vector (w)</div>
               <div className="flex items-center gap-2">
-                <span className="text-gray-500 text-2xl">[</span>
+                <span className="text-text-secondary text-2xl">[</span>
                 {witnessVector.map((val, idx) => (
                   <div key={idx} className="flex flex-col items-center">
                     <motion.div
                       className={`w-16 h-16 flex items-center justify-center rounded-lg border-2 font-mono text-lg font-bold ${
-                        idx === 0 ? 'bg-gray-50 border-gray-300 text-gray-700' :
+                        idx === 0 ? 'bg-surface border-border-subtle text-text-primary' :
                         idx === 1 ? 'bg-yellow-50 border-yellow-400 text-yellow-900' :
                         'bg-green-50 border-green-400 text-green-900'
                       }`}
@@ -144,12 +144,12 @@ export default function StepConstraints({ onNext, onPrevious, targetOutput, xVal
                     >
                       {val}
                     </motion.div>
-                    <div className="text-xs text-gray-500 mt-1">{witnessLabels[idx]}</div>
+                    <div className="text-xs text-text-secondary mt-1">{witnessLabels[idx]}</div>
                     {idx === 1 && <div className="text-xs text-yellow-700 font-semibold">🔒 Private</div>}
                     {idx === 2 && <div className="text-xs text-green-700 font-semibold">Public</div>}
                   </div>
                 ))}
-                <span className="text-gray-500 text-2xl">]</span>
+                <span className="text-text-secondary text-2xl">]</span>
               </div>
             </div>
           </div>
@@ -171,8 +171,8 @@ export default function StepConstraints({ onNext, onPrevious, targetOutput, xVal
                     highlighted={animationStep === 1}
                   />
                 </motion.div>
-                <div className="text-gray-400 my-2">·</div>
-                <div className="text-sm font-mono text-gray-600">w</div>
+                <div className="text-slate-400 my-2">·</div>
+                <div className="text-sm font-mono text-text-secondary">w</div>
 
                 {animationStep >= 1 && (
                   <motion.div
@@ -193,10 +193,10 @@ export default function StepConstraints({ onNext, onPrevious, targetOutput, xVal
 
               {/* Multiplication symbol */}
               <motion.div
-                className="text-4xl text-gray-400 font-bold"
+                className="text-4xl text-slate-400 font-bold"
                 animate={{
                   scale: animationStep === 3 ? 1.3 : 1,
-                  color: animationStep === 3 ? '#9333ea' : '#9ca3af'
+                  color: animationStep === 3 ? '#9333ea' : '#94a3b8'
                 }}
               >
                 ×
@@ -216,8 +216,8 @@ export default function StepConstraints({ onNext, onPrevious, targetOutput, xVal
                     highlighted={animationStep === 2}
                   />
                 </motion.div>
-                <div className="text-gray-400 my-2">·</div>
-                <div className="text-sm font-mono text-gray-600">w</div>
+                <div className="text-slate-400 my-2">·</div>
+                <div className="text-sm font-mono text-text-secondary">w</div>
 
                 {animationStep >= 2 && (
                   <motion.div
@@ -243,7 +243,7 @@ export default function StepConstraints({ onNext, onPrevious, targetOutput, xVal
                   animate={{ opacity: 1, scale: 1 }}
                   className="flex flex-col items-center"
                 >
-                  <div className="text-4xl text-gray-400 font-bold mb-2">=</div>
+                  <div className="text-4xl text-slate-400 font-bold mb-2">=</div>
                   <div className="px-4 py-3 bg-purple-600 text-white rounded-lg">
                     <div className="text-xs mb-1">Left × Right</div>
                     <div className="font-mono text-xl font-bold">
@@ -258,7 +258,7 @@ export default function StepConstraints({ onNext, onPrevious, targetOutput, xVal
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-4xl text-gray-400 font-bold"
+                  className="text-4xl text-slate-400 font-bold"
                 >
                   =
                 </motion.div>
@@ -283,8 +283,8 @@ export default function StepConstraints({ onNext, onPrevious, targetOutput, xVal
                       highlighted={animationStep === 4}
                     />
                   </motion.div>
-                  <div className="text-gray-400 my-2">·</div>
-                  <div className="text-sm font-mono text-gray-600">w</div>
+                  <div className="text-slate-400 my-2">·</div>
+                  <div className="text-sm font-mono text-text-secondary">w</div>
 
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
@@ -341,12 +341,12 @@ export default function StepConstraints({ onNext, onPrevious, targetOutput, xVal
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="bg-indigo-50 p-4 rounded-lg border border-indigo-200"
+              className="bg-accent-primary/10 p-4 rounded-lg border border-accent-primary"
             >
-              <div className="font-semibold text-indigo-900 mb-2">
+              <div className="font-semibold text-text-primary mb-2">
                 {getStepTitle(animationStep)}
               </div>
-              <div className="text-indigo-700 text-sm">
+              <div className="text-text-secondary text-sm">
                 {getStepExplanation(animationStep, xValue, leftValue, rightValue, productValue, constraintValue, isCorrect, targetOutput)}
               </div>
             </motion.div>
@@ -357,34 +357,34 @@ export default function StepConstraints({ onNext, onPrevious, targetOutput, xVal
       {/* Educational content */}
       <div className="space-y-4 mb-8">
         <div>
-          <h4 className="font-semibold text-gray-800 mb-2">What is R1CS?</h4>
-          <p className="text-gray-600">
+          <h4 className="font-semibold text-text-primary mb-2">What is R1CS?</h4>
+          <p className="text-text-secondary">
             R1CS (Rank-1 Constraint System) is how ZK circuits are represented mathematically.
-            Each constraint has the form <code className="bg-gray-100 px-2 py-1 rounded font-mono">(A·w) × (B·w) = (C·w)</code>,
-            where <code className="bg-gray-100 px-1 rounded">w</code> is the witness vector containing all values
+            Each constraint has the form <code className="bg-surface px-2 py-1 rounded font-mono border border-border-subtle">(A·w) × (B·w) = (C·w)</code>,
+            where <code className="bg-surface px-1 rounded border border-border-subtle">w</code> is the witness vector containing all values
             (constants, private inputs, and public outputs).
           </p>
         </div>
 
         <div>
-          <h4 className="font-semibold text-gray-800 mb-2">Our Circuit's R1CS</h4>
-          <p className="text-gray-600 mb-2">
-            For the circuit <code className="bg-gray-100 px-2 py-1 rounded">x * x = out</code>, we have:
+          <h4 className="font-semibold text-text-primary mb-2">Our Circuit's R1CS</h4>
+          <p className="text-text-secondary mb-2">
+            For the circuit <code className="bg-surface px-2 py-1 rounded border border-border-subtle">x * x = out</code>, we have:
           </p>
-          <ul className="list-disc list-inside space-y-2 text-gray-600 ml-4">
+          <ul className="list-disc list-inside space-y-2 text-text-secondary ml-4">
             <li><strong>A = [0, 1, 0]</strong> selects x from the witness</li>
             <li><strong>B = [0, 1, 0]</strong> selects x from the witness</li>
             <li><strong>C = [0, 0, 1]</strong> selects out from the witness</li>
             <li><strong>w = [1, {xValue}, {userOutput}]</strong> is your witness vector</li>
           </ul>
-          <p className="text-gray-600 mt-2">
+          <p className="text-text-secondary mt-2">
             The constraint ensures: x × x = out
           </p>
         </div>
 
         <div>
-          <h4 className="font-semibold text-gray-800 mb-2">Why This Matters</h4>
-          <p className="text-gray-600">
+          <h4 className="font-semibold text-text-primary mb-2">Why This Matters</h4>
+          <p className="text-text-secondary">
             You can only generate a valid ZK proof if your witness satisfies ALL constraints.
             {isCorrect ? (
               <span className="text-green-600 font-semibold"> Your current witness (x = {xValue}) satisfies the constraint because {xValue}² = {userOutput} = {targetOutput}!</span>
@@ -398,13 +398,13 @@ export default function StepConstraints({ onNext, onPrevious, targetOutput, xVal
       <div className="flex justify-between">
         <button
           onClick={onPrevious}
-          className="bg-gray-300 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors"
+          className="bg-surface text-text-primary px-6 py-3 rounded-lg font-semibold hover:bg-slate-700 transition-colors border-2 border-border-subtle"
         >
           ← Previous
         </button>
         <button
           onClick={onNext}
-          className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
+          className="bg-accent-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-600 transition-colors"
         >
           Next: Witness →
         </button>
