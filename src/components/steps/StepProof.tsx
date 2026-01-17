@@ -1,7 +1,13 @@
 import { useState } from 'react'
+import NotebookPanel from '../layout/NotebookPanel'
+import CanvasPanel from '../layout/CanvasPanel'
+import BottomControlBar from '../layout/BottomControlBar'
 import { generateProof } from '../../utils/zkProof'
 
 interface StepProofProps {
+  currentStepIndex: number
+  totalSteps: number
+  stepName: string
   onNext: () => void
   onPrevious: () => void
   setProofData: (data: any) => void
@@ -9,7 +15,7 @@ interface StepProofProps {
   targetOutput: number
 }
 
-export default function StepProof({ onNext, onPrevious, setProofData, xValue, targetOutput }: StepProofProps) {
+export default function StepProof({ currentStepIndex, totalSteps, stepName, onNext, onPrevious, setProofData, xValue, targetOutput }: StepProofProps) {
   const [isGenerating, setIsGenerating] = useState(false)
   const [proofGenerated, setProofGenerated] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -18,7 +24,6 @@ export default function StepProof({ onNext, onPrevious, setProofData, xValue, ta
   const isCorrect = userOutput === targetOutput
 
   const handleGenerateProof = async () => {
-    // Check if the user has the correct answer
     if (!isCorrect) {
       setError(`Cannot generate proof! Your guess x = ${xValue} is incorrect (${xValue}² = ${userOutput}, not ${targetOutput}). You can only prove something if you actually know a valid answer. Go back and try 3 or -3.`)
       return
@@ -40,119 +45,109 @@ export default function StepProof({ onNext, onPrevious, setProofData, xValue, ta
   }
 
   return (
-    <div>
-      <h2 className="text-3xl font-bold text-text-primary mb-6">
-        Step 5: Proof Generation
-      </h2>
+    <>
+      <NotebookPanel>
+        <h2 className="text-xl font-bold mb-4">6. Proof Generation</h2>
 
-      <div className="bg-accent-primary/10 border-l-4 border-accent-primary p-6 mb-6 rounded">
-        <h3 className="text-xl font-semibold text-text-primary mb-3">
-          Creating the Zero-Knowledge Proof
-        </h3>
-        <p className="text-text-secondary">
-          Now we use the witness to generate a cryptographic proof that we know a
-          value x where x² = 9.
+        <p className="text-text-light-secondary text-md leading-relaxed mb-6">
+          Now we use the witness to generate a cryptographic proof that we know a value x where x² = {targetOutput}.
         </p>
-      </div>
 
-      <div className="space-y-4 mb-8">
-        <div>
-          <h4 className="font-semibold text-text-primary mb-2">
-            What Happens During Proof Generation?
-          </h4>
-          <p className="text-text-secondary mb-3">
-            The proving algorithm takes our witness (x = 3) and uses advanced
-            cryptography to create a proof. This process involves:
-          </p>
-          <ul className="list-disc list-inside space-y-2 text-text-secondary ml-4">
-            <li>Computing polynomial evaluations based on the constraints</li>
-            <li>Applying cryptographic transformations (elliptic curve operations)</li>
-            <li>Creating proof elements that can be verified without revealing x</li>
-          </ul>
+        <div className="bg-background-light p-5 rounded-xl border-l-4 border-primary mb-8 relative">
+          <span className="absolute -right-4 -top-2 italic bg-white px-2 border rounded-md shadow-sm text-sm text-text-light-secondary">
+            What Happens?
+          </span>
+          <div className="text-md space-y-2">
+            <p>• Computing polynomial evaluations</p>
+            <p>• Applying cryptographic transformations</p>
+            <p>• Creating verifiable proof elements</p>
+          </div>
         </div>
 
-        <div>
-          <h4 className="font-semibold text-text-primary mb-2">
-            The Proof Structure
-          </h4>
-          <p className="text-text-secondary">
-            The final proof is a collection of cryptographic values (points on an
-            elliptic curve). These values prove we know a valid witness, but they
-            reveal nothing about what x actually is.
-          </p>
+        <h3 className="text-lg font-semibold mb-3">The Proof Structure</h3>
+        <p className="text-text-light-secondary text-md leading-relaxed mb-6">
+          The final proof is a collection of cryptographic values (points on an elliptic curve).
+          These values prove we know a valid witness, but they reveal nothing about what x actually is.
+        </p>
+
+        <h3 className="text-lg font-semibold mb-3">Why This Works</h3>
+        <p className="text-text-light-secondary text-md leading-relaxed mb-6">
+          The proof system (Groth16 in this case) has a special property: it's computationally
+          infeasible to create a valid proof unless you actually know a witness that satisfies
+          the constraints. This is the security guarantee of the system.
+        </p>
+
+        <div className="italic text-lg mt-8 border-t border-primary/20 pt-4 flex gap-3">
+          <span className="material-symbols-outlined text-primary">edit_note</span>
+          <div>
+            <p className="mb-2 text-text-light-secondary">"The proof proves knowledge without revealing the knowledge itself."</p>
+          </div>
+        </div>
+      </NotebookPanel>
+
+      <CanvasPanel>
+        <div className="flex-1 flex items-center justify-center p-12 pb-24">
+          <div className="w-full max-w-2xl text-center">
+            {!proofGenerated && !error && (
+              <div className="bg-surface rounded-xl shadow-2xl border border-dark-border p-12">
+                <div className="mb-8">
+                  <span className="material-symbols-outlined text-accent-cyan text-6xl">verified_user</span>
+                </div>
+                <h3 className="text-2xl font-bold text-text-dark-primary mb-4">Ready to Generate Proof</h3>
+                <p className="text-text-dark-secondary mb-8">
+                  Click below to create a zero-knowledge proof for x² = {targetOutput}
+                </p>
+                <button
+                  onClick={handleGenerateProof}
+                  disabled={isGenerating}
+                  className="bg-accent-cyan text-slate-900 px-8 py-4 rounded-lg font-bold text-lg hover:bg-accent-cyan/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_15px_rgba(34,211,238,0.3)] flex items-center justify-center gap-3 mx-auto"
+                >
+                  {isGenerating ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Generating Proof...
+                    </>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined">play_circle</span>
+                      Generate Zero-Knowledge Proof
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+
+            {proofGenerated && (
+              <div className="bg-accent-cyan/10 border-2 border-accent-cyan p-12 rounded-xl shadow-2xl glow-cyan">
+                <div className="text-6xl mb-6">✓</div>
+                <h3 className="text-3xl font-bold text-accent-cyan mb-4">Proof Generated Successfully!</h3>
+                <p className="text-text-dark-secondary text-lg">
+                  The proof has been created. It proves we know x where x² = {targetOutput}, without revealing that x = {xValue}.
+                </p>
+              </div>
+            )}
+
+            {error && (
+              <div className="bg-signal-error/10 border-2 border-signal-error p-12 rounded-xl shadow-2xl">
+                <div className="text-6xl mb-6">⚠</div>
+                <h3 className="text-3xl font-bold text-signal-error mb-4">Error</h3>
+                <p className="text-text-dark-secondary">{error}</p>
+              </div>
+            )}
+          </div>
         </div>
 
-        <div>
-          <h4 className="font-semibold text-text-primary mb-2">Why This Works</h4>
-          <p className="text-text-secondary">
-            The proof system (Groth16 in this case) has a special property: it's
-            computationally infeasible to create a valid proof unless you actually
-            know a witness that satisfies the constraints. This is the security
-            guarantee of the system.
-          </p>
-        </div>
-      </div>
-
-      <div className="bg-surface border-2 border-border-subtle rounded-lg p-6 mb-6">
-        <div className="text-center">
-          {!proofGenerated && !error && (
-            <button
-              onClick={handleGenerateProof}
-              disabled={isGenerating}
-              className="bg-accent-primary text-white px-8 py-4 rounded-lg font-semibold hover:bg-indigo-600 transition-colors disabled:bg-indigo-400 disabled:cursor-not-allowed text-lg"
-            >
-              {isGenerating ? (
-                <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Generating Proof...
-                </span>
-              ) : (
-                'Generate Zero-Knowledge Proof'
-              )}
-            </button>
-          )}
-
-          {proofGenerated && (
-            <div className="bg-signal-success/10 border-2 border-signal-success p-6 rounded-lg">
-              <div className="text-4xl mb-3">✓</div>
-              <h4 className="text-xl font-semibold text-signal-success mb-2">
-                Proof Generated Successfully!
-              </h4>
-              <p className="text-text-secondary">
-                The proof has been created. It proves we know x where x² = 9,
-                without revealing that x = 3.
-              </p>
-            </div>
-          )}
-
-          {error && (
-            <div className="bg-signal-error/10 border-2 border-signal-error p-6 rounded-lg">
-              <div className="text-4xl mb-3">⚠</div>
-              <h4 className="text-xl font-semibold text-signal-error mb-2">Error</h4>
-              <p className="text-text-secondary">{error}</p>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="flex justify-between">
-        <button
-          onClick={onPrevious}
-          className="bg-surface text-text-primary border-2 border-border-subtle px-6 py-3 rounded-lg font-semibold hover:bg-slate-700 transition-colors"
-        >
-          ← Previous
-        </button>
-        <button
-          onClick={onNext}
-          disabled={!proofGenerated}
-          className="bg-accent-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-600 transition-colors disabled:bg-surface disabled:cursor-not-allowed disabled:text-text-secondary"
-        >
-          Next: Verify Proof →
-        </button>
-      </div>
-    </div>
+        <BottomControlBar
+          currentStepIndex={currentStepIndex}
+          totalSteps={totalSteps}
+          stepName={stepName}
+          onNext={onNext}
+          onPrevious={onPrevious}
+        />
+      </CanvasPanel>
+    </>
   )
 }

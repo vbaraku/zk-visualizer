@@ -169,16 +169,7 @@ export default function PolynomialVisualization({ xValue }: PolynomialVisualizat
 
   return (
     <div className="space-y-6">
-      {/* Step title and description */}
-      <div className="bg-accent-primary/10 border-l-4 border-accent-primary p-6 rounded">
-        <h3 className="text-xl font-semibold text-text-primary mb-2">{currentStep.title}</h3>
-        <p className="text-text-secondary">{currentStep.description}</p>
-      </div>
-
-      {/* Phase-specific content */}
-      {renderPhaseContent()}
-
-      {/* Animation controls */}
+      {/* Animation controls - at the top */}
       <AnimationControls
         currentStep={animation.currentStep}
         totalSteps={animation.totalSteps}
@@ -192,33 +183,14 @@ export default function PolynomialVisualization({ xValue }: PolynomialVisualizat
         onSpeedChange={animation.setSpeed}
       />
 
-      {/* Educational notes */}
-      <div className="bg-surface border-2 border-border-subtle rounded-lg p-6">
-        <h4 className="text-lg font-semibold text-text-primary mb-3">
-          Understanding Polynomial Proofs
-        </h4>
-        <div className="space-y-3 text-text-secondary text-sm">
-          <p>
-            <strong className="text-text-primary">Why Polynomials?</strong> They give us a magical
-            property called the <em>Schwartz-Zippel lemma</em>: different polynomials rarely agree
-            at random points.
-          </p>
-          <p>
-            <strong className="text-text-primary">The Key Insight:</strong> Instead of checking ALL
-            constraints individually, we encode them into polynomials and check ONE equation at ONE
-            random point.
-          </p>
-          <p>
-            <strong className="text-text-primary">QAP (Quadratic Arithmetic Program):</strong> The
-            transformation from R1CS constraints to polynomial form. The equation A(x)·B(x) - C(x) =
-            H(x)·Z(x) must hold for all constraint evaluation points.
-          </p>
-          <p>
-            <strong className="text-text-primary">Succinctness:</strong> This is what makes ZK
-            proofs SUCCINCT — constant-size proofs regardless of circuit complexity!
-          </p>
-        </div>
+      {/* Step title and description */}
+      <div className="bg-accent-primary/10 border-l-4 border-accent-primary p-6 rounded">
+        <h3 className="text-xl font-semibold text-text-primary mb-2">{currentStep.title}</h3>
+        <p className="text-text-secondary">{currentStep.description}</p>
       </div>
+
+      {/* Phase-specific content */}
+      {renderPhaseContent()}
     </div>
   )
 }

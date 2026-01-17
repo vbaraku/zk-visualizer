@@ -43,11 +43,18 @@ export default function StepContainer({
   }
 
   const renderStep = () => {
+    const stepIndex = currentStepInfo.order - 1 // Convert to 0-based index
+    const totalSteps = STEPS.length
+
     switch (currentStep) {
       case 'problem':
         return (
           <StepProblem
+            currentStepIndex={stepIndex}
+            totalSteps={totalSteps}
+            stepName={currentStepInfo.title}
             onNext={handleNext}
+            onPrevious={handlePrevious}
             xValue={xValue}
             setXValue={setXValue}
             targetOutput={targetOutput}
@@ -56,6 +63,9 @@ export default function StepContainer({
       case 'circuit':
         return (
           <StepCircuit
+            currentStepIndex={stepIndex}
+            totalSteps={totalSteps}
+            stepName={currentStepInfo.title}
             onNext={handleNext}
             onPrevious={handlePrevious}
             targetOutput={targetOutput}
@@ -65,6 +75,9 @@ export default function StepContainer({
       case 'constraints':
         return (
           <StepConstraints
+            currentStepIndex={stepIndex}
+            totalSteps={totalSteps}
+            stepName={currentStepInfo.title}
             onNext={handleNext}
             onPrevious={handlePrevious}
             targetOutput={targetOutput}
@@ -74,6 +87,9 @@ export default function StepContainer({
       case 'polynomials':
         return (
           <StepPolynomials
+            currentStepIndex={stepIndex}
+            totalSteps={totalSteps}
+            stepName={currentStepInfo.title}
             onNext={handleNext}
             onPrevious={handlePrevious}
             xValue={xValue}
@@ -82,6 +98,9 @@ export default function StepContainer({
       case 'witness':
         return (
           <StepWitness
+            currentStepIndex={stepIndex}
+            totalSteps={totalSteps}
+            stepName={currentStepInfo.title}
             onNext={handleNext}
             onPrevious={handlePrevious}
             xValue={xValue}
@@ -91,6 +110,9 @@ export default function StepContainer({
       case 'proof':
         return (
           <StepProof
+            currentStepIndex={stepIndex}
+            totalSteps={totalSteps}
+            stepName={currentStepInfo.title}
             onNext={handleNext}
             onPrevious={handlePrevious}
             setProofData={setProofData}
@@ -101,6 +123,9 @@ export default function StepContainer({
       case 'verification':
         return (
           <StepVerification
+            currentStepIndex={stepIndex}
+            totalSteps={totalSteps}
+            stepName={currentStepInfo.title}
             onPrevious={handlePrevious}
             proofData={proofData}
             xValue={xValue}
@@ -113,44 +138,8 @@ export default function StepContainer({
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      {/* Progress indicator */}
-      <div className="mb-8">
-        <div className="flex justify-between items-center">
-          {STEPS.map((step, index) => (
-            <div key={step.id} className="flex items-center flex-1">
-              <div className="flex flex-col items-center">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all ${
-                    step.order <= currentStepInfo.order
-                      ? 'bg-accent-primary text-white'
-                      : 'bg-surface text-text-secondary border-2 border-border-subtle'
-                  }`}
-                >
-                  {step.order}
-                </div>
-                <span className="text-xs mt-2 text-center text-text-secondary hidden sm:block">
-                  {step.title}
-                </span>
-              </div>
-              {index < STEPS.length - 1 && (
-                <div
-                  className={`h-1 flex-1 mx-2 rounded transition-all ${
-                    step.order < currentStepInfo.order
-                      ? 'bg-accent-primary'
-                      : 'bg-border-subtle'
-                  }`}
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Step content */}
-      <div className="bg-surface rounded-lg shadow-xl p-8 border border-border-subtle">
-        {renderStep()}
-      </div>
-    </div>
+    <main className="flex h-[calc(100vh-64px)] overflow-hidden">
+      {renderStep()}
+    </main>
   )
 }

@@ -1,6 +1,12 @@
+import NotebookPanel from '../layout/NotebookPanel'
+import CanvasPanel from '../layout/CanvasPanel'
+import BottomControlBar from '../layout/BottomControlBar'
 import R1CSVisualization from '../r1cs/R1CSVisualization'
 
 interface StepConstraintsProps {
+  currentStepIndex: number
+  totalSteps: number
+  stepName: string
   onNext: () => void
   onPrevious: () => void
   targetOutput: number
@@ -8,6 +14,9 @@ interface StepConstraintsProps {
 }
 
 export default function StepConstraints({
+  currentStepIndex,
+  totalSteps,
+  stepName,
   onNext,
   onPrevious,
   targetOutput,
@@ -17,99 +26,87 @@ export default function StepConstraints({
   const isCorrect = userOutput === targetOutput
 
   return (
-    <div>
-      <h2 className="text-3xl font-bold text-text-primary mb-6">
-        Step 3: The Constraints
-      </h2>
+    <>
+      <NotebookPanel>
+        <h2 className="text-xl font-bold mb-4">3. R1CS Constraints</h2>
 
-      {/* Main R1CS Visualization */}
-      <R1CSVisualization xValue={xValue} targetOutput={targetOutput} />
+        <p className="text-text-light-secondary text-md leading-relaxed mb-6">
+          The circuit transforms into R1CS (Rank-1 Constraint System) matrices.
+          This is crucial because proof systems like Groth16 work with R1CS, not circuits directly.
+        </p>
 
-      {/* Additional Educational Content */}
-      <div className="mt-8 space-y-4">
-        <div className="bg-accent-secondary/10 border-l-4 border-accent-secondary p-6 rounded">
-          <h4 className="text-lg font-semibold text-text-primary mb-3">
+        <div className="bg-background-light p-5 rounded-xl border-l-4 border-primary mb-8 relative">
+          <span className="absolute -right-4 -top-2 italic bg-white px-2 border rounded-md shadow-sm text-sm text-text-light-secondary">
             From Circuit to Math
-          </h4>
-          <p className="text-text-secondary">
-            You've just seen how a circuit transforms into R1CS matrices! This transformation is
-            crucial because:
-          </p>
-          <ul className="list-disc list-inside text-text-secondary ml-4 mt-2 space-y-1">
-            <li>
-              Proof systems like Groth16 work with R1CS, not circuits directly
-            </li>
-            <li>
-              Each constraint becomes a mathematical equation that must be satisfied
-            </li>
-            <li>
-              The witness must make ALL constraints true to create a valid proof
-            </li>
-          </ul>
-        </div>
-
-        <div className="bg-surface border-2 border-border-subtle rounded-lg p-6">
-          <h4 className="text-lg font-semibold text-text-primary mb-3">
-            Your Values
-          </h4>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            <div>
-              <div className="text-text-secondary">Input (x):</div>
-              <div className="font-mono text-xl text-signal-private font-bold">{xValue}</div>
-            </div>
-            <div>
-              <div className="text-text-secondary">Computed (x²):</div>
-              <div className="font-mono text-xl text-text-primary font-bold">{userOutput}</div>
-            </div>
-            <div>
-              <div className="text-text-secondary">Target:</div>
-              <div className="font-mono text-xl text-text-primary font-bold">{targetOutput}</div>
-            </div>
-            <div>
-              <div className="text-text-secondary">Valid?</div>
-              <div className={`text-xl font-bold ${isCorrect ? 'text-signal-success' : 'text-signal-error'}`}>
-                {isCorrect ? '✓ Yes' : '✗ No'}
-              </div>
-            </div>
+          </span>
+          <div className="text-md space-y-2">
+            <p>• Each gate becomes a mathematical equation</p>
+            <p>• The witness must make ALL constraints true</p>
+            <p>• Represented as matrix multiplication: A × B = C</p>
           </div>
-          {!isCorrect && (
-            <div className="mt-4 p-3 bg-signal-error/10 border border-signal-error rounded">
-              <p className="text-signal-error text-sm">
-                <strong>Note:</strong> Your witness doesn't satisfy the constraint! With x = {xValue},
-                you get {userOutput} but the target is {targetOutput}. The proof will show this
-                failure clearly.
-              </p>
-            </div>
-          )}
         </div>
 
-        <div className="bg-surface border-2 border-border-subtle rounded-lg p-6">
-          <h4 className="text-lg font-semibold text-text-primary mb-3">
-            Next Step: The Witness
-          </h4>
-          <p className="text-text-secondary">
-            Now that we have our constraint system, we'll look at how the witness (our actual
-            values) fits into this framework. The witness contains both public and private values
-            that must satisfy all constraints.
+        <h3 className="text-lg font-semibold mb-3">Your Values</h3>
+        <div className="space-y-2 text-sm mb-6">
+          <p>Input (x): <span className="font-mono text-primary font-bold">{xValue}</span></p>
+          <p>Computed (x²): <span className="font-mono font-bold">{userOutput}</span></p>
+          <p>Target: <span className="font-mono font-bold">{targetOutput}</span></p>
+          <p>Valid? <span className={isCorrect ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}>{isCorrect ? '✓ Yes' : '✗ No'}</span></p>
+        </div>
+
+        {!isCorrect && (
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+            <p className="text-red-700 text-sm">
+              <strong>Note:</strong> Your witness doesn't satisfy the constraint! With x = {xValue},
+              you get {userOutput} but the target is {targetOutput}.
+            </p>
+          </div>
+        )}
+
+        <h3 className="text-lg font-semibold mb-3">Understanding R1CS</h3>
+        <div className="space-y-3 text-text-light-secondary text-sm mb-6">
+          <p>
+            <strong className="text-text-light-primary">R1CS (Rank-1 Constraint System)</strong> is how
+            we express circuits as mathematical constraints. Each gate becomes one constraint.
+          </p>
+          <p>
+            The matrices <span className="text-purple-600 font-semibold">A</span>,{' '}
+            <span className="text-blue-600 font-semibold">B</span>, and{' '}
+            <span className="text-green-600 font-semibold">C</span> are "selectors" that pick
+            values from the witness vector.
+          </p>
+          <p>
+            When we compute <code className="bg-background-light px-2 py-1 rounded font-mono text-xs">(A·w) × (B·w) = (C·w)</code>,
+            we're checking that the witness satisfies the circuit's constraints.
+          </p>
+          <p>
+            <strong className="text-text-light-primary">Why this matters:</strong> The proof system will
+            use these matrices to create a zero-knowledge proof. The prover must satisfy ALL
+            constraints to create a valid proof!
           </p>
         </div>
-      </div>
 
-      {/* Navigation Buttons */}
-      <div className="flex justify-between mt-8">
-        <button
-          onClick={onPrevious}
-          className="bg-surface text-text-primary border-2 border-border-subtle px-6 py-3 rounded-lg font-semibold hover:bg-slate-700 transition-colors"
-        >
-          ← Previous
-        </button>
-        <button
-          onClick={onNext}
-          className="bg-accent-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-600 transition-colors"
-        >
-          Next: Polynomials →
-        </button>
-      </div>
-    </div>
+        <div className="italic text-lg mt-8 border-t border-primary/20 pt-4 flex gap-3">
+          <span className="material-symbols-outlined text-primary">edit_note</span>
+          <div>
+            <p className="mb-2 text-text-light-secondary">"The witness contains both public and private values that must satisfy all constraints."</p>
+          </div>
+        </div>
+      </NotebookPanel>
+
+      <CanvasPanel>
+        <div className="flex-1 p-6 pb-24">
+          <R1CSVisualization xValue={xValue} targetOutput={targetOutput} />
+        </div>
+
+        <BottomControlBar
+          currentStepIndex={currentStepIndex}
+          totalSteps={totalSteps}
+          stepName={stepName}
+          onNext={onNext}
+          onPrevious={onPrevious}
+        />
+      </CanvasPanel>
+    </>
   )
 }

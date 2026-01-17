@@ -1,4 +1,11 @@
+import NotebookPanel from '../layout/NotebookPanel'
+import CanvasPanel from '../layout/CanvasPanel'
+import BottomControlBar from '../layout/BottomControlBar'
+
 interface StepWitnessProps {
+  currentStepIndex: number
+  totalSteps: number
+  stepName: string
   onNext: () => void
   onPrevious: () => void
   xValue: number
@@ -6,6 +13,9 @@ interface StepWitnessProps {
 }
 
 export default function StepWitness({
+  currentStepIndex,
+  totalSteps,
+  stepName,
   onNext,
   onPrevious,
   xValue,
@@ -15,132 +25,92 @@ export default function StepWitness({
   const isCorrect = userOutput === targetOutput
 
   return (
-    <div>
-      <h2 className="text-3xl font-bold text-text-primary mb-6">
-        Step 4: The Witness
-      </h2>
+    <>
+      <NotebookPanel>
+        <h2 className="text-xl font-bold mb-4">5. The Witness</h2>
 
-      <div className="bg-accent-secondary/10 border-l-4 border-accent-secondary p-6 mb-6 rounded">
-        <h3 className="text-xl font-semibold text-text-primary mb-3">
-          Assignment of Values
-        </h3>
-        <p className="text-text-secondary">
-          The witness is the complete assignment of all values (public and
-          private) that satisfy the constraints.
+        <p className="text-text-light-secondary text-md leading-relaxed mb-6">
+          The witness is the complete assignment of all values (public and private) that satisfy the constraints.
+          It's the prover's secret knowledge.
         </p>
-      </div>
 
-      <div className="bg-surface border-2 border-border-subtle rounded-lg p-6 mb-6">
-        <h4 className="font-semibold text-text-primary mb-4">Your Witness:</h4>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-signal-private/10 border-2 border-signal-private p-4 rounded-lg">
-            <p className="text-sm text-signal-private font-semibold mb-2">
-              🔒 PRIVATE
-            </p>
-            <p className="font-mono text-xl text-text-primary mb-1">
-              x = {xValue}
-            </p>
-            <p className="text-sm text-text-secondary">
-              This value is secret and will never be revealed
-            </p>
-          </div>
-
-          <div className="bg-signal-public/10 border-2 border-signal-public p-4 rounded-lg">
-            <p className="text-sm text-signal-public font-semibold mb-2">
-              🔓 PUBLIC (Target)
-            </p>
-            <p className="font-mono text-xl text-text-primary mb-1">
-              out = {targetOutput}
-            </p>
-            <p className="text-sm text-text-secondary">
-              This is the challenge value everyone knows
-            </p>
+        <div className="bg-background-light p-5 rounded-xl border-l-4 border-primary mb-8 relative">
+          <span className="absolute -right-4 -top-2 italic bg-white px-2 border rounded-md shadow-sm text-sm text-text-light-secondary">
+            Assignment
+          </span>
+          <div className="text-md space-y-2">
+            <p>Private: <span className="font-mono text-amber-600 font-bold">x = {xValue}</span> 🔒</p>
+            <p>Public: <span className="font-mono text-green-600 font-bold">out = {targetOutput}</span> 🔓</p>
           </div>
         </div>
 
-        <div
-          className={`mt-6 p-4 rounded-lg ${
-            isCorrect ? 'bg-signal-success/10' : 'bg-signal-error/10'
-          }`}
-        >
-          <p
-            className={`font-semibold mb-2 ${
-              isCorrect ? 'text-signal-success' : 'text-signal-error'
-            }`}
-          >
-            {isCorrect ? '✓ Witness Check:' : '✗ Witness Check:'}
-          </p>
-          <p
-            className={`font-mono ${
-              isCorrect ? 'text-signal-success' : 'text-signal-error'
-            }`}
-          >
-            {xValue} × {xValue} = {userOutput}{' '}
-            {isCorrect ? '=' : '≠'} {targetOutput}
-          </p>
-          <p
-            className={`text-sm mt-2 ${
-              isCorrect ? 'text-text-secondary' : 'text-signal-error'
-            }`}
-          >
-            {isCorrect
-              ? 'The witness satisfies all constraints! You can generate a valid proof.'
-              : `The witness does NOT satisfy the constraints (${userOutput} ≠ ${targetOutput}). Proof generation will fail.`}
-          </p>
-        </div>
-      </div>
+        <h3 className="text-lg font-semibold mb-3">What is a Witness?</h3>
+        <p className="text-text-light-secondary text-md leading-relaxed mb-6">
+          The witness is the prover's secret knowledge. It includes all the private inputs and
+          intermediate values needed to satisfy the constraints. Think of it as the "solution"
+          to the puzzle that the constraints define.
+        </p>
 
-      <div className="space-y-4 mb-8">
-        <div>
-          <h4 className="font-semibold text-text-primary mb-2">
-            What is a Witness?
-          </h4>
-          <p className="text-text-secondary">
-            The witness is the prover's secret knowledge. It includes all the
-            private inputs and intermediate values needed to satisfy the
-            constraints. Think of it as the "solution" to the puzzle that the
-            constraints define.
-          </p>
+        <h3 className="text-lg font-semibold mb-3">Why "Witness"?</h3>
+        <p className="text-text-light-secondary text-md leading-relaxed mb-6">
+          It's called a witness because it "witnesses" or testifies that a valid solution exists.
+          The prover uses the witness to generate the proof, but the witness itself is never
+          shared with the verifier.
+        </p>
+
+        <div className="italic text-lg mt-8 border-t border-primary/20 pt-4 flex gap-3">
+          <span className="material-symbols-outlined text-primary">edit_note</span>
+          <div>
+            <p className="mb-2 text-text-light-secondary">"We're about to generate a proof using this witness, but the proof won't contain the value of x!"</p>
+          </div>
+        </div>
+      </NotebookPanel>
+
+      <CanvasPanel>
+        <div className="flex-1 flex items-center justify-center p-12 pb-24">
+          <div className="w-full max-w-2xl space-y-6">
+            <div className="bg-amber-400/10 border-2 border-amber-400 p-6 rounded-xl shadow-xl">
+              <p className="text-sm text-amber-400 font-bold mb-3 uppercase flex items-center gap-2">
+                <span className="material-symbols-outlined">lock</span>
+                Private
+              </p>
+              <p className="font-mono text-3xl text-text-dark-primary mb-2">x = {xValue}</p>
+              <p className="text-sm text-text-dark-secondary">This value is secret and will never be revealed</p>
+            </div>
+
+            <div className="bg-green-500/10 border-2 border-green-500 p-6 rounded-xl shadow-xl">
+              <p className="text-sm text-green-500 font-bold mb-3 uppercase flex items-center gap-2">
+                <span className="material-symbols-outlined">lock_open</span>
+                Public (Target)
+              </p>
+              <p className="font-mono text-3xl text-text-dark-primary mb-2">out = {targetOutput}</p>
+              <p className="text-sm text-text-dark-secondary">This is the challenge value everyone knows</p>
+            </div>
+
+            <div className={`p-6 rounded-xl border-2 ${isCorrect ? 'bg-accent-cyan/10 border-accent-cyan' : 'bg-signal-error/10 border-signal-error'}`}>
+              <p className={`font-bold mb-3 text-lg ${isCorrect ? 'text-accent-cyan' : 'text-signal-error'}`}>
+                {isCorrect ? '✓ Witness Check:' : '✗ Witness Check:'}
+              </p>
+              <p className={`font-mono text-xl ${isCorrect ? 'text-accent-cyan' : 'text-signal-error'}`}>
+                {xValue} × {xValue} = {userOutput} {isCorrect ? '=' : '≠'} {targetOutput}
+              </p>
+              <p className="text-sm mt-3 text-text-dark-secondary">
+                {isCorrect
+                  ? 'The witness satisfies all constraints! You can generate a valid proof.'
+                  : `The witness does NOT satisfy the constraints (${userOutput} ≠ ${targetOutput}). Proof generation will fail.`}
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <h4 className="font-semibold text-text-primary mb-2">
-            Why "Witness"?
-          </h4>
-          <p className="text-text-secondary">
-            It's called a witness because it "witnesses" or testifies that a
-            valid solution exists. The prover uses the witness to generate the
-            proof, but the witness itself is never shared with the verifier.
-          </p>
-        </div>
-
-        <div>
-          <h4 className="font-semibold text-text-primary mb-2">
-            The Magic of Zero-Knowledge
-          </h4>
-          <p className="text-text-secondary">
-            Here's the magic: we're about to generate a proof using this witness,
-            but the proof won't contain the value "3". The verifier will be
-            convinced we know x, without ever learning what x is!
-          </p>
-        </div>
-      </div>
-
-      <div className="flex justify-between">
-        <button
-          onClick={onPrevious}
-          className="bg-surface text-text-primary border-2 border-border-subtle px-6 py-3 rounded-lg font-semibold hover:bg-slate-700 transition-colors"
-        >
-          ← Previous: Polynomials
-        </button>
-        <button
-          onClick={onNext}
-          className="bg-accent-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-600 transition-colors"
-        >
-          Next: Generate Proof →
-        </button>
-      </div>
-    </div>
+        <BottomControlBar
+          currentStepIndex={currentStepIndex}
+          totalSteps={totalSteps}
+          stepName={stepName}
+          onNext={onNext}
+          onPrevious={onPrevious}
+        />
+      </CanvasPanel>
+    </>
   )
 }
