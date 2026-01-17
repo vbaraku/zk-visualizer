@@ -11,13 +11,13 @@ function App() {
   const [xValue, setXValue] = useState<number>(3)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <header className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gray-800 mb-4">
+          <h1 className="text-5xl font-bold text-text-primary mb-4">
             ZK Visualizer
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-text-secondary">
             Learn how Zero-Knowledge Proofs work, step by step
           </p>
         </header>

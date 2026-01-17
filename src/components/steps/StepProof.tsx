@@ -41,25 +41,30 @@ export default function StepProof({ onNext, onPrevious, setProofData, xValue, ta
 
   return (
     <div>
-      <h2 className="text-3xl font-bold text-gray-800 mb-6">Step 5: Proof Generation</h2>
+      <h2 className="text-3xl font-bold text-text-primary mb-6">
+        Step 5: Proof Generation
+      </h2>
 
-      <div className="bg-indigo-50 border-l-4 border-indigo-600 p-6 mb-6">
-        <h3 className="text-xl font-semibold text-indigo-900 mb-3">
+      <div className="bg-accent-primary/10 border-l-4 border-accent-primary p-6 mb-6 rounded">
+        <h3 className="text-xl font-semibold text-text-primary mb-3">
           Creating the Zero-Knowledge Proof
         </h3>
-        <p className="text-indigo-800">
-          Now we use the witness to generate a cryptographic proof that we know a value x where x² = 9.
+        <p className="text-text-secondary">
+          Now we use the witness to generate a cryptographic proof that we know a
+          value x where x² = 9.
         </p>
       </div>
 
       <div className="space-y-4 mb-8">
         <div>
-          <h4 className="font-semibold text-gray-800 mb-2">What Happens During Proof Generation?</h4>
-          <p className="text-gray-600 mb-3">
-            The proving algorithm takes our witness (x = 3) and uses advanced cryptography to create a proof.
-            This process involves:
+          <h4 className="font-semibold text-text-primary mb-2">
+            What Happens During Proof Generation?
+          </h4>
+          <p className="text-text-secondary mb-3">
+            The proving algorithm takes our witness (x = 3) and uses advanced
+            cryptography to create a proof. This process involves:
           </p>
-          <ul className="list-disc list-inside space-y-2 text-gray-600 ml-4">
+          <ul className="list-disc list-inside space-y-2 text-text-secondary ml-4">
             <li>Computing polynomial evaluations based on the constraints</li>
             <li>Applying cryptographic transformations (elliptic curve operations)</li>
             <li>Creating proof elements that can be verified without revealing x</li>
@@ -67,30 +72,34 @@ export default function StepProof({ onNext, onPrevious, setProofData, xValue, ta
         </div>
 
         <div>
-          <h4 className="font-semibold text-gray-800 mb-2">The Proof Structure</h4>
-          <p className="text-gray-600">
-            The final proof is a collection of cryptographic values (points on an elliptic curve).
-            These values prove we know a valid witness, but they reveal nothing about what x actually is.
+          <h4 className="font-semibold text-text-primary mb-2">
+            The Proof Structure
+          </h4>
+          <p className="text-text-secondary">
+            The final proof is a collection of cryptographic values (points on an
+            elliptic curve). These values prove we know a valid witness, but they
+            reveal nothing about what x actually is.
           </p>
         </div>
 
         <div>
-          <h4 className="font-semibold text-gray-800 mb-2">Why This Works</h4>
-          <p className="text-gray-600">
-            The proof system (Groth16 in this case) has a special property: it's computationally
-            infeasible to create a valid proof unless you actually know a witness that satisfies
-            the constraints. This is the security guarantee of the system.
+          <h4 className="font-semibold text-text-primary mb-2">Why This Works</h4>
+          <p className="text-text-secondary">
+            The proof system (Groth16 in this case) has a special property: it's
+            computationally infeasible to create a valid proof unless you actually
+            know a witness that satisfies the constraints. This is the security
+            guarantee of the system.
           </p>
         </div>
       </div>
 
-      <div className="bg-white border-2 border-gray-200 rounded-lg p-6 mb-6">
+      <div className="bg-surface border-2 border-border-subtle rounded-lg p-6 mb-6">
         <div className="text-center">
           {!proofGenerated && !error && (
             <button
               onClick={handleGenerateProof}
               disabled={isGenerating}
-              className="bg-indigo-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-indigo-700 transition-colors disabled:bg-indigo-400 disabled:cursor-not-allowed text-lg"
+              className="bg-accent-primary text-white px-8 py-4 rounded-lg font-semibold hover:bg-indigo-600 transition-colors disabled:bg-indigo-400 disabled:cursor-not-allowed text-lg"
             >
               {isGenerating ? (
                 <span className="flex items-center justify-center">
@@ -107,10 +116,12 @@ export default function StepProof({ onNext, onPrevious, setProofData, xValue, ta
           )}
 
           {proofGenerated && (
-            <div className="bg-green-50 border-2 border-green-300 p-6 rounded-lg">
+            <div className="bg-signal-success/10 border-2 border-signal-success p-6 rounded-lg">
               <div className="text-4xl mb-3">✓</div>
-              <h4 className="text-xl font-semibold text-green-900 mb-2">Proof Generated Successfully!</h4>
-              <p className="text-green-700">
+              <h4 className="text-xl font-semibold text-signal-success mb-2">
+                Proof Generated Successfully!
+              </h4>
+              <p className="text-text-secondary">
                 The proof has been created. It proves we know x where x² = 9,
                 without revealing that x = 3.
               </p>
@@ -118,10 +129,10 @@ export default function StepProof({ onNext, onPrevious, setProofData, xValue, ta
           )}
 
           {error && (
-            <div className="bg-red-50 border-2 border-red-300 p-6 rounded-lg">
+            <div className="bg-signal-error/10 border-2 border-signal-error p-6 rounded-lg">
               <div className="text-4xl mb-3">⚠</div>
-              <h4 className="text-xl font-semibold text-red-900 mb-2">Error</h4>
-              <p className="text-red-700">{error}</p>
+              <h4 className="text-xl font-semibold text-signal-error mb-2">Error</h4>
+              <p className="text-text-secondary">{error}</p>
             </div>
           )}
         </div>
@@ -130,14 +141,14 @@ export default function StepProof({ onNext, onPrevious, setProofData, xValue, ta
       <div className="flex justify-between">
         <button
           onClick={onPrevious}
-          className="bg-gray-300 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-400 transition-colors"
+          className="bg-surface text-text-primary border-2 border-border-subtle px-6 py-3 rounded-lg font-semibold hover:bg-slate-700 transition-colors"
         >
           ← Previous
         </button>
         <button
           onClick={onNext}
           disabled={!proofGenerated}
-          className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+          className="bg-accent-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-600 transition-colors disabled:bg-surface disabled:cursor-not-allowed disabled:text-text-secondary"
         >
           Next: Verify Proof →
         </button>

@@ -1,4 +1,4 @@
-export type Step = 'problem' | 'circuit' | 'constraints' | 'witness' | 'proof' | 'verification'
+export type Step = 'problem' | 'circuit' | 'constraints' | 'polynomials' | 'witness' | 'proof' | 'verification'
 
 export interface ProofData {
   proof: any
@@ -35,21 +35,39 @@ export const STEPS: StepInfo[] = [
     order: 3
   },
   {
+    id: 'polynomials',
+    title: 'The Polynomials',
+    description: 'How polynomials enable succinct proofs',
+    order: 4
+  },
+  {
     id: 'witness',
     title: 'The Witness',
     description: 'Private inputs that satisfy the constraints',
-    order: 4
+    order: 5
   },
   {
     id: 'proof',
     title: 'Proof Generation',
     description: 'Creating the zero-knowledge proof',
-    order: 5
+    order: 6
   },
   {
     id: 'verification',
     title: 'Verification',
     description: 'Verifying the proof without revealing secrets',
-    order: 6
+    order: 7
   }
 ]
+
+// Re-export circuit types
+export * from './circuit'
+
+// Re-export animation types
+export * from './animation'
+
+// Re-export R1CS types
+export * from './r1cs'
+
+// Re-export polynomial types
+export * from './polynomial'
