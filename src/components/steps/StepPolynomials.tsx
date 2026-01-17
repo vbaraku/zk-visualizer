@@ -3,12 +3,18 @@ import CanvasPanel from '../layout/CanvasPanel'
 import PolynomialVisualization from '../polynomial/PolynomialVisualization'
 
 interface StepPolynomialsProps {
+  currentStepIndex: number
+  totalSteps: number
+  stepName: string
   onNext: () => void
   onPrevious: () => void
   xValue: number
 }
 
 export default function StepPolynomials({
+  currentStepIndex: _currentStepIndex,
+  totalSteps: _totalSteps,
+  stepName: _stepName,
   onNext,
   onPrevious,
   xValue,

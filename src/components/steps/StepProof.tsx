@@ -1,9 +1,13 @@
 import { useState } from 'react'
 import NotebookPanel from '../layout/NotebookPanel'
 import CanvasPanel from '../layout/CanvasPanel'
+import BottomControlBar from '../layout/BottomControlBar'
 import { generateProof } from '../../utils/zkProof'
 
 interface StepProofProps {
+  currentStepIndex: number
+  totalSteps: number
+  stepName: string
   onNext: () => void
   onPrevious: () => void
   setProofData: (data: any) => void
@@ -11,7 +15,7 @@ interface StepProofProps {
   targetOutput: number
 }
 
-export default function StepProof({ onNext, onPrevious, setProofData, xValue, targetOutput }: StepProofProps) {
+export default function StepProof({ currentStepIndex, totalSteps, stepName, onNext, onPrevious, setProofData, xValue, targetOutput }: StepProofProps) {
   const [isGenerating, setIsGenerating] = useState(false)
   const [proofGenerated, setProofGenerated] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -43,59 +47,41 @@ export default function StepProof({ onNext, onPrevious, setProofData, xValue, ta
   return (
     <>
       <NotebookPanel>
-        <h2 className="text-xl font-bold mb-4 font-serif-edu">5. Proof Generation</h2>
+        <h2 className="text-xl font-bold mb-4">5. Proof Generation</h2>
 
-        <p className="text-text-light-secondary text-md leading-relaxed mb-6 font-serif-edu">
+        <p className="text-text-light-secondary text-md leading-relaxed mb-6">
           Now we use the witness to generate a cryptographic proof that we know a value x where x² = {targetOutput}.
         </p>
 
         <div className="bg-background-light p-5 rounded-xl border-l-4 border-primary mb-8 relative">
-          <span className="absolute -right-4 -top-2 handwritten bg-white px-2 border rounded-md shadow-sm text-sm">
+          <span className="absolute -right-4 -top-2 italic bg-white px-2 border rounded-md shadow-sm text-sm text-text-light-secondary">
             What Happens?
           </span>
-          <div className="text-md space-y-2 font-serif-edu">
+          <div className="text-md space-y-2">
             <p>• Computing polynomial evaluations</p>
             <p>• Applying cryptographic transformations</p>
             <p>• Creating verifiable proof elements</p>
           </div>
         </div>
 
-        <h3 className="text-lg font-bold mb-3 font-serif-edu">The Proof Structure</h3>
-        <p className="text-text-light-secondary text-md leading-relaxed mb-6 font-serif-edu">
+        <h3 className="text-lg font-semibold mb-3">The Proof Structure</h3>
+        <p className="text-text-light-secondary text-md leading-relaxed mb-6">
           The final proof is a collection of cryptographic values (points on an elliptic curve).
           These values prove we know a valid witness, but they reveal nothing about what x actually is.
         </p>
 
-        <h3 className="text-lg font-bold mb-3 font-serif-edu">Why This Works</h3>
-        <p className="text-text-light-secondary text-md leading-relaxed mb-6 font-serif-edu">
+        <h3 className="text-lg font-semibold mb-3">Why This Works</h3>
+        <p className="text-text-light-secondary text-md leading-relaxed mb-6">
           The proof system (Groth16 in this case) has a special property: it's computationally
           infeasible to create a valid proof unless you actually know a witness that satisfies
           the constraints. This is the security guarantee of the system.
         </p>
 
-        <div className="handwritten text-lg mt-8 border-t border-primary/20 pt-4 flex gap-3">
+        <div className="italic text-lg mt-8 border-t border-primary/20 pt-4 flex gap-3">
           <span className="material-symbols-outlined text-primary">edit_note</span>
           <div>
-            <p className="mb-2">"The proof proves knowledge without revealing the knowledge itself."</p>
+            <p className="mb-2 text-text-light-secondary">"The proof proves knowledge without revealing the knowledge itself."</p>
           </div>
-        </div>
-
-        <div className="mt-8 flex justify-between">
-          <button
-            onClick={onPrevious}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-gray-300 text-text-light-primary hover:bg-gray-100 transition-all"
-          >
-            <span className="material-symbols-outlined">arrow_back</span>
-            <span>Previous</span>
-          </button>
-          <button
-            onClick={onNext}
-            disabled={!proofGenerated}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span>Next Step</span>
-            <span className="material-symbols-outlined">arrow_forward</span>
-          </button>
         </div>
       </NotebookPanel>
 
@@ -153,6 +139,14 @@ export default function StepProof({ onNext, onPrevious, setProofData, xValue, ta
             )}
           </div>
         </div>
+
+        <BottomControlBar
+          currentStepIndex={currentStepIndex}
+          totalSteps={totalSteps}
+          stepName={stepName}
+          onNext={onNext}
+          onPrevious={onPrevious}
+        />
       </CanvasPanel>
     </>
   )

@@ -3,6 +3,9 @@ import CanvasPanel from '../layout/CanvasPanel'
 import R1CSVisualization from '../r1cs/R1CSVisualization'
 
 interface StepConstraintsProps {
+  currentStepIndex: number
+  totalSteps: number
+  stepName: string
   onNext: () => void
   onPrevious: () => void
   targetOutput: number
@@ -10,6 +13,9 @@ interface StepConstraintsProps {
 }
 
 export default function StepConstraints({
+  currentStepIndex: _currentStepIndex,
+  totalSteps: _totalSteps,
+  stepName: _stepName,
   onNext,
   onPrevious,
   targetOutput,

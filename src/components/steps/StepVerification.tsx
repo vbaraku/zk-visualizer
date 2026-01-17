@@ -1,16 +1,20 @@
 import { useState } from 'react'
 import NotebookPanel from '../layout/NotebookPanel'
 import CanvasPanel from '../layout/CanvasPanel'
+import BottomControlBar from '../layout/BottomControlBar'
 import { verifyProof } from '../../utils/zkProof'
 
 interface StepVerificationProps {
+  currentStepIndex: number
+  totalSteps: number
+  stepName: string
   onPrevious: () => void
   proofData: any
   xValue: number
   targetOutput: number
 }
 
-export default function StepVerification({ onPrevious, proofData, xValue: _xValue, targetOutput }: StepVerificationProps) {
+export default function StepVerification({ currentStepIndex, totalSteps, stepName, onPrevious, proofData, xValue: _xValue, targetOutput }: StepVerificationProps) {
   const [isVerifying, setIsVerifying] = useState(false)
   const [verificationResult, setVerificationResult] = useState<boolean | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -50,17 +54,17 @@ export default function StepVerification({ onPrevious, proofData, xValue: _xValu
   return (
     <>
       <NotebookPanel>
-        <h2 className="text-xl font-bold mb-4 font-serif-edu">6. Verification</h2>
+        <h2 className="text-xl font-bold mb-4">6. Verification</h2>
 
-        <p className="text-text-light-secondary text-md leading-relaxed mb-6 font-serif-edu">
+        <p className="text-text-light-secondary text-md leading-relaxed mb-6">
           The verifier can now check the proof without learning anything about the secret value x.
         </p>
 
         <div className="bg-background-light p-5 rounded-xl border-l-4 border-primary mb-8 relative">
-          <span className="absolute -right-4 -top-2 handwritten bg-white px-2 border rounded-md shadow-sm text-sm">
+          <span className="absolute -right-4 -top-2 italic bg-white px-2 border rounded-md shadow-sm text-sm text-text-light-secondary">
             What the Verifier Knows
           </span>
-          <div className="text-sm space-y-2 font-serif-edu">
+          <div className="text-sm space-y-2">
             <p>• The challenge: x² = {targetOutput}</p>
             <p>• The circuit structure</p>
             <p>• The cryptographic proof</p>
@@ -68,37 +72,27 @@ export default function StepVerification({ onPrevious, proofData, xValue: _xValu
         </div>
 
         <div className="bg-amber-50 p-5 rounded-xl border-l-4 border-amber-600 mb-8 relative">
-          <span className="absolute -right-4 -top-2 handwritten bg-white px-2 border rounded-md shadow-sm text-sm">
+          <span className="absolute -right-4 -top-2 italic bg-white px-2 border rounded-md shadow-sm text-sm text-text-light-secondary">
             What the Verifier Does NOT Know
           </span>
-          <div className="text-sm space-y-2 font-serif-edu">
+          <div className="text-sm space-y-2">
             <p>🔒 The private input: x = ???</p>
             <p>🔒 Whether x is 3 or -3</p>
             <p>🔒 Any other prover knowledge</p>
           </div>
         </div>
 
-        <h3 className="text-lg font-bold mb-3 font-serif-edu">How Verification Works</h3>
-        <p className="text-text-light-secondary text-sm leading-relaxed mb-6 font-serif-edu">
+        <h3 className="text-lg font-semibold mb-3">How Verification Works</h3>
+        <p className="text-text-light-secondary text-sm leading-relaxed mb-6">
           The verifier performs cryptographic checks on the proof using elliptic curve pairings.
           These checks confirm the proof is valid WITHOUT revealing the secret value x.
         </p>
 
-        <div className="handwritten text-lg mt-8 border-t border-primary/20 pt-4 flex gap-3">
+        <div className="italic text-lg mt-8 border-t border-primary/20 pt-4 flex gap-3">
           <span className="material-symbols-outlined text-primary">edit_note</span>
           <div>
-            <p className="mb-2">"The verifier learns NOTHING except that the prover knows a valid answer!"</p>
+            <p className="mb-2 text-text-light-secondary">"The verifier learns NOTHING except that the prover knows a valid answer!"</p>
           </div>
-        </div>
-
-        <div className="mt-8">
-          <button
-            onClick={onPrevious}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-gray-300 text-text-light-primary hover:bg-gray-100 transition-all"
-          >
-            <span className="material-symbols-outlined">arrow_back</span>
-            <span>Previous</span>
-          </button>
         </div>
       </NotebookPanel>
 
@@ -182,6 +176,13 @@ export default function StepVerification({ onPrevious, proofData, xValue: _xValu
             )}
           </div>
         </div>
+
+        <BottomControlBar
+          currentStepIndex={currentStepIndex}
+          totalSteps={totalSteps}
+          stepName={stepName}
+          onPrevious={onPrevious}
+        />
       </CanvasPanel>
     </>
   )

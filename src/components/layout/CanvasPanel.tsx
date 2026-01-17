@@ -11,7 +11,7 @@ interface CanvasPanelProps {
  */
 export default function CanvasPanel({ children, className = '' }: CanvasPanelProps) {
   return (
-    <section className={`flex-1 flex flex-col bg-background-dark-canvas relative dark-canvas-grid ${className}`}>
+    <section className={`flex-1 flex flex-col bg-background-dark-canvas relative dark-canvas-grid overflow-y-auto custom-scrollbar-dark ${className}`}>
       {children}
     </section>
   )

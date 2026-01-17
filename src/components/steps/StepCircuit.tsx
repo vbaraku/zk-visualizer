@@ -9,6 +9,9 @@ import { generateComputationSteps, getNodeStatesAtStep, getEdgeStatesAtStep, get
 import { useWitnessAnimation } from '../../hooks/useWitnessAnimation'
 
 interface StepCircuitProps {
+  currentStepIndex: number
+  totalSteps: number
+  stepName: string
   onNext: () => void
   onPrevious: () => void
   targetOutput: number
@@ -16,6 +19,9 @@ interface StepCircuitProps {
 }
 
 export default function StepCircuit({
+  currentStepIndex: _currentStepIndex,
+  totalSteps: _totalSteps,
+  stepName: _stepName,
   onNext,
   onPrevious,
   targetOutput,

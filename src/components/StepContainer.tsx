@@ -43,11 +43,18 @@ export default function StepContainer({
   }
 
   const renderStep = () => {
+    const stepIndex = currentStepInfo.order - 1 // Convert to 0-based index
+    const totalSteps = STEPS.length
+
     switch (currentStep) {
       case 'problem':
         return (
           <StepProblem
+            currentStepIndex={stepIndex}
+            totalSteps={totalSteps}
+            stepName={currentStepInfo.title}
             onNext={handleNext}
+            onPrevious={handlePrevious}
             xValue={xValue}
             setXValue={setXValue}
             targetOutput={targetOutput}
@@ -56,6 +63,9 @@ export default function StepContainer({
       case 'circuit':
         return (
           <StepCircuit
+            currentStepIndex={stepIndex}
+            totalSteps={totalSteps}
+            stepName={currentStepInfo.title}
             onNext={handleNext}
             onPrevious={handlePrevious}
             targetOutput={targetOutput}
@@ -65,6 +75,9 @@ export default function StepContainer({
       case 'constraints':
         return (
           <StepConstraints
+            currentStepIndex={stepIndex}
+            totalSteps={totalSteps}
+            stepName={currentStepInfo.title}
             onNext={handleNext}
             onPrevious={handlePrevious}
             targetOutput={targetOutput}
@@ -74,6 +87,9 @@ export default function StepContainer({
       case 'polynomials':
         return (
           <StepPolynomials
+            currentStepIndex={stepIndex}
+            totalSteps={totalSteps}
+            stepName={currentStepInfo.title}
             onNext={handleNext}
             onPrevious={handlePrevious}
             xValue={xValue}
@@ -82,6 +98,9 @@ export default function StepContainer({
       case 'witness':
         return (
           <StepWitness
+            currentStepIndex={stepIndex}
+            totalSteps={totalSteps}
+            stepName={currentStepInfo.title}
             onNext={handleNext}
             onPrevious={handlePrevious}
             xValue={xValue}
@@ -91,6 +110,9 @@ export default function StepContainer({
       case 'proof':
         return (
           <StepProof
+            currentStepIndex={stepIndex}
+            totalSteps={totalSteps}
+            stepName={currentStepInfo.title}
             onNext={handleNext}
             onPrevious={handlePrevious}
             setProofData={setProofData}
@@ -101,6 +123,9 @@ export default function StepContainer({
       case 'verification':
         return (
           <StepVerification
+            currentStepIndex={stepIndex}
+            totalSteps={totalSteps}
+            stepName={currentStepInfo.title}
             onPrevious={handlePrevious}
             proofData={proofData}
             xValue={xValue}
@@ -113,44 +138,8 @@ export default function StepContainer({
   }
 
   return (
-    <main className="flex flex-col h-[calc(100vh-64px)] overflow-hidden">
-      {/* Breadcrumb & Mode Selector */}
-      <div className="bg-white border-b border-[#e7edf3] px-10 py-4 flex items-center justify-between">
-        <div className="flex flex-col">
-          <div className="flex items-center gap-2 mb-1">
-            <a className="text-text-light-secondary text-xs font-medium uppercase tracking-wider" href="#">
-              Protocols
-            </a>
-            <span className="text-text-light-secondary text-xs">/</span>
-            <a className="text-text-light-secondary text-xs font-medium uppercase tracking-wider" href="#">
-              Zero-Knowledge
-            </a>
-            <span className="text-text-light-secondary text-xs">/</span>
-            <span className="text-text-light-primary text-xs font-bold uppercase tracking-wider">
-              Circuit Proofs
-            </span>
-          </div>
-          <h1 className="text-2xl font-black tracking-tight">{currentStepInfo.title}</h1>
-        </div>
-        <div className="flex gap-2">
-          <div className="flex border rounded-lg overflow-hidden bg-background-light p-1">
-            <button className="px-3 py-1.5 text-xs font-bold bg-white shadow-sm rounded-md text-primary">
-              Notebook
-            </button>
-            <button className="px-3 py-1.5 text-xs font-medium text-text-light-secondary hover:text-text-light-primary">
-              Interactive
-            </button>
-            <button className="px-3 py-1.5 text-xs font-medium text-text-light-secondary hover:text-text-light-primary">
-              Code
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Split-Panel Layout */}
-      <div className="flex flex-1 overflow-hidden">
-        {renderStep()}
-      </div>
+    <main className="flex h-[calc(100vh-64px)] overflow-hidden">
+      {renderStep()}
     </main>
   )
 }

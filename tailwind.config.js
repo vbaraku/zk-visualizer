@@ -41,8 +41,8 @@ export default {
       },
       fontFamily: {
         'display': ['Space Grotesk', 'sans-serif'],
-        'serif-edu': ['Cormorant Garamond', 'serif'],
-        'sans': ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        'sans': ['Inter', 'sans-serif'],
+        'mono': ['JetBrains Mono', 'monospace'],
       },
       borderRadius: {
         'DEFAULT': '0.25rem',
