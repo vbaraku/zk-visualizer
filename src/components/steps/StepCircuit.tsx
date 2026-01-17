@@ -84,13 +84,6 @@ export default function StepCircuit({
     setShowAnimation(false)
   }
 
-  // Start animation
-  const handleStartAnimation = () => {
-    setShowAnimation(true)
-    animation.reset()
-    animation.play()
-  }
-
   return (
     <>
       <NotebookPanel>
@@ -138,24 +131,28 @@ export default function StepCircuit({
       </NotebookPanel>
 
       <CanvasPanel>
-        <div className="flex-1 flex flex-col p-6 pb-24">
-          {/* Animation Controls - at top when active */}
-          {showAnimation && (
-            <div className="mb-4">
-              <AnimationControls
-                currentStep={animation.currentStep}
-                totalSteps={animation.totalSteps}
-                isPlaying={animation.isPlaying}
-                speed={animation.speed}
-                onPlay={animation.play}
-                onPause={animation.pause}
-                onReset={animation.reset}
-                onStepForward={animation.stepForward}
-                onStepBack={animation.stepBack}
-                onSpeedChange={animation.setSpeed}
-              />
-            </div>
-          )}
+        <div className="flex flex-col p-6 pb-24">
+          {/* Animation Controls - always visible at top */}
+          <div className="mb-4">
+            <AnimationControls
+              currentStep={animation.currentStep}
+              totalSteps={animation.totalSteps}
+              isPlaying={animation.isPlaying}
+              speed={animation.speed}
+              onPlay={() => {
+                if (!showAnimation) {
+                  setShowAnimation(true)
+                  animation.reset()
+                }
+                animation.play()
+              }}
+              onPause={animation.pause}
+              onReset={animation.reset}
+              onStepForward={animation.stepForward}
+              onStepBack={animation.stepBack}
+              onSpeedChange={animation.setSpeed}
+            />
+          </div>
 
           {/* Input Controls Panel */}
           <div className="bg-surface border-2 border-border-subtle rounded-lg p-5 mb-4">
@@ -186,15 +183,6 @@ export default function StepCircuit({
                   </span>
                 </div>
               </div>
-              {!showAnimation && (
-                <button
-                  onClick={handleStartAnimation}
-                  className="w-full bg-accent-cyan text-slate-900 px-4 py-3 rounded-lg font-semibold hover:bg-accent-cyan/90 transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(34,211,238,0.3)]"
-                >
-                  <span className="material-symbols-outlined text-sm">play_arrow</span>
-                  Animate Computation
-                </button>
-              )}
             </div>
           </div>
 
