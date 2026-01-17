@@ -73,7 +73,7 @@ export default function StepProblem({
       </NotebookPanel>
 
       <CanvasPanel>
-        <div className="flex-1 flex items-center justify-center p-12">
+        <div className="flex-1 flex items-center justify-center p-12 pb-24">
           <div className="w-full max-w-2xl">
             <div className={`bg-surface rounded-xl shadow-2xl border border-dark-border p-8 ${isCorrect ? 'glow-cyan' : ''}`}>
               <h3 className="text-xl font-bold text-text-dark-primary mb-4 flex items-center gap-2">

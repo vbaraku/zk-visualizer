@@ -97,7 +97,7 @@ export default function StepVerification({ currentStepIndex, totalSteps, stepNam
       </NotebookPanel>
 
       <CanvasPanel>
-        <div className="flex-1 flex items-center justify-center p-12">
+        <div className="flex-1 flex items-center justify-center p-12 pb-24">
           <div className="w-full max-w-2xl space-y-6">
             {!verificationResult && verificationResult !== false && (
               <div className="bg-surface rounded-xl shadow-2xl border border-dark-border p-12 text-center">

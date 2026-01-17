@@ -95,7 +95,7 @@ export default function StepConstraints({
       </NotebookPanel>
 
       <CanvasPanel>
-        <div className="flex-1 p-6">
+        <div className="flex-1 p-6 pb-24">
           <R1CSVisualization xValue={xValue} targetOutput={targetOutput} />
         </div>
 

@@ -67,7 +67,7 @@ export default function StepWitness({
       </NotebookPanel>
 
       <CanvasPanel>
-        <div className="flex-1 flex items-center justify-center p-12">
+        <div className="flex-1 flex items-center justify-center p-12 pb-24">
           <div className="w-full max-w-2xl space-y-6">
             <div className="bg-amber-400/10 border-2 border-amber-400 p-6 rounded-xl shadow-xl">
               <p className="text-sm text-amber-400 font-bold mb-3 uppercase flex items-center gap-2">

@@ -86,7 +86,7 @@ export default function StepProof({ currentStepIndex, totalSteps, stepName, onNe
       </NotebookPanel>
 
       <CanvasPanel>
-        <div className="flex-1 flex items-center justify-center p-12">
+        <div className="flex-1 flex items-center justify-center p-12 pb-24">
           <div className="w-full max-w-2xl text-center">
             {!proofGenerated && !error && (
               <div className="bg-surface rounded-xl shadow-2xl border border-dark-border p-12">

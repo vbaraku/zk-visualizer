@@ -138,48 +138,8 @@ export default function StepCircuit({
       </NotebookPanel>
 
       <CanvasPanel>
-        <div className="flex-1 flex flex-col p-6">
-          {/* Input Controls Panel - compact at top */}
-          <div className="bg-surface border-2 border-border-subtle rounded-lg p-4 mb-4">
-            <div className="flex items-center gap-6">
-              <div className="flex-1">
-                <label className="text-xs text-text-dark-secondary mb-1 block font-semibold">
-                  x (private input):
-                </label>
-                <input
-                  type="number"
-                  value={inputValue}
-                  onChange={(e) => handleInputChange(Number(e.target.value))}
-                  className="w-full bg-background-dark-canvas border-2 border-border-subtle rounded-lg px-3 py-2 text-text-dark-primary font-mono text-lg focus:outline-none focus:border-accent-cyan transition-colors"
-                />
-              </div>
-              <div className="flex-1 text-sm text-text-dark-secondary">
-                <div className="flex justify-between mb-1">
-                  <span>Output (x²):</span>
-                  <span className="font-mono font-bold text-text-dark-primary">
-                    {inputValue * inputValue}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Target:</span>
-                  <span className="font-mono font-bold text-text-dark-primary">
-                    {targetOutput}
-                  </span>
-                </div>
-              </div>
-              {!showAnimation && (
-                <button
-                  onClick={handleStartAnimation}
-                  className="bg-accent-cyan text-slate-900 px-6 py-3 rounded-lg font-semibold hover:bg-accent-cyan/90 transition-colors flex items-center gap-2 shadow-[0_0_15px_rgba(34,211,238,0.3)]"
-                >
-                  <span className="material-symbols-outlined text-sm">play_arrow</span>
-                  Animate
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Animation Controls */}
+        <div className="flex-1 flex flex-col p-6 pb-24">
+          {/* Animation Controls - at top when active */}
           {showAnimation && (
             <div className="mb-4">
               <AnimationControls
@@ -196,6 +156,47 @@ export default function StepCircuit({
               />
             </div>
           )}
+
+          {/* Input Controls Panel */}
+          <div className="bg-surface border-2 border-border-subtle rounded-lg p-5 mb-4">
+            <h4 className="text-sm font-semibold text-text-dark-primary mb-4">Input Controls</h4>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs text-text-dark-secondary mb-2 block font-semibold">
+                  x (private input):
+                </label>
+                <input
+                  type="number"
+                  value={inputValue}
+                  onChange={(e) => handleInputChange(Number(e.target.value))}
+                  className="w-full bg-background-dark-canvas border-2 border-border-subtle rounded-lg px-3 py-2 text-text-dark-primary font-mono text-lg focus:outline-none focus:border-accent-cyan transition-colors"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4 text-sm text-text-dark-secondary">
+                <div className="flex justify-between">
+                  <span>Output (x²):</span>
+                  <span className="font-mono font-bold text-text-dark-primary">
+                    {inputValue * inputValue}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Target:</span>
+                  <span className="font-mono font-bold text-text-dark-primary">
+                    {targetOutput}
+                  </span>
+                </div>
+              </div>
+              {!showAnimation && (
+                <button
+                  onClick={handleStartAnimation}
+                  className="w-full bg-accent-cyan text-slate-900 px-4 py-3 rounded-lg font-semibold hover:bg-accent-cyan/90 transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(34,211,238,0.3)]"
+                >
+                  <span className="material-symbols-outlined text-sm">play_arrow</span>
+                  Animate Computation
+                </button>
+              )}
+            </div>
+          </div>
 
           {/* Circuit Visualization */}
           <div className="flex-1">
