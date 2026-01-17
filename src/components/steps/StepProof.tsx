@@ -47,7 +47,7 @@ export default function StepProof({ currentStepIndex, totalSteps, stepName, onNe
   return (
     <>
       <NotebookPanel>
-        <h2 className="text-xl font-bold mb-4">5. Proof Generation</h2>
+        <h2 className="text-xl font-bold mb-4">6. Proof Generation</h2>
 
         <p className="text-text-light-secondary text-md leading-relaxed mb-6">
           Now we use the witness to generate a cryptographic proof that we know a value x where x² = {targetOutput}.

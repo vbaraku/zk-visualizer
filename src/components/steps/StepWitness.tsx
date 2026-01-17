@@ -27,7 +27,7 @@ export default function StepWitness({
   return (
     <>
       <NotebookPanel>
-        <h2 className="text-xl font-bold mb-4">4. The Witness</h2>
+        <h2 className="text-xl font-bold mb-4">5. The Witness</h2>
 
         <p className="text-text-light-secondary text-md leading-relaxed mb-6">
           The witness is the complete assignment of all values (public and private) that satisfy the constraints.

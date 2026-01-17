@@ -54,7 +54,7 @@ export default function StepVerification({ currentStepIndex, totalSteps, stepNam
   return (
     <>
       <NotebookPanel>
-        <h2 className="text-xl font-bold mb-4">6. Verification</h2>
+        <h2 className="text-xl font-bold mb-4">7. Verification</h2>
 
         <p className="text-text-light-secondary text-md leading-relaxed mb-6">
           The verifier can now check the proof without learning anything about the secret value x.

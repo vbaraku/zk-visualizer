@@ -29,17 +29,21 @@ export default function BottomControlBar({
       {/* Progress Timeline */}
       <div className="flex-1 relative">
         {/* Step Labels */}
-        <div className="absolute -top-6 left-0 w-full flex justify-between px-1">
-          {STEP_NAMES.map((step, idx) => (
-            <span
-              key={step}
-              className={`text-[10px] font-bold uppercase tracking-wider ${
-                idx === currentStepIndex ? 'text-accent-cyan glow-text' : 'text-slate-500'
-              }`}
-            >
-              {step}
-            </span>
-          ))}
+        <div className="absolute -top-6 left-0 w-full">
+          {STEP_NAMES.map((step, idx) => {
+            const stepProgress = ((idx + 1) / totalSteps) * 100
+            return (
+              <span
+                key={step}
+                className={`absolute text-[10px] font-bold uppercase tracking-wider -translate-x-1/2 ${
+                  idx === currentStepIndex ? 'text-accent-cyan glow-text' : 'text-slate-500'
+                }`}
+                style={{ left: `${stepProgress}%` }}
+              >
+                {step}
+              </span>
+            )
+          })}
         </div>
 
         {/* Progress Bar */}
@@ -53,13 +57,17 @@ export default function BottomControlBar({
         </div>
 
         {/* Tick Marks */}
-        <div className="absolute top-0 left-0 w-full flex justify-between">
-          {STEP_NAMES.map((_, idx) => (
-            <div
-              key={idx}
-              className={`h-4 w-0.5 ${idx <= currentStepIndex ? 'bg-accent-cyan/40' : 'bg-slate-700'}`}
-            ></div>
-          ))}
+        <div className="absolute top-0 left-0 w-full">
+          {STEP_NAMES.map((_, idx) => {
+            const stepProgress = ((idx + 1) / totalSteps) * 100
+            return (
+              <div
+                key={idx}
+                className={`absolute h-4 w-0.5 -translate-x-1/2 ${idx <= currentStepIndex ? 'bg-accent-cyan/40' : 'bg-slate-700'}`}
+                style={{ left: `${stepProgress}%` }}
+              ></div>
+            )
+          })}
         </div>
       </div>
 
