@@ -25,7 +25,7 @@ export default function BottomControlBar({
   const progress = ((currentStepIndex + 1) / totalSteps) * 100
 
   return (
-    <div className={`h-20 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 flex items-center px-10 gap-10 ${className}`}>
+    <div className={`sticky bottom-0 z-40 h-20 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 flex items-center px-10 gap-10 ${className}`}>
       {/* Progress Timeline */}
       <div className="flex-1 relative">
         {/* Step Labels */}

@@ -64,11 +64,27 @@ export default function StepConstraints({
         )}
 
         <h3 className="text-lg font-semibold mb-3">Understanding R1CS</h3>
-        <p className="text-text-light-secondary text-md leading-relaxed mb-6">
-          R1CS (Rank-1 Constraint System) is a mathematical representation where each constraint
-          is expressed as a product of two linear combinations equaling a third. This form is
-          essential for zero-knowledge proof systems to work efficiently.
-        </p>
+        <div className="space-y-3 text-text-light-secondary text-sm mb-6">
+          <p>
+            <strong className="text-text-light-primary">R1CS (Rank-1 Constraint System)</strong> is how
+            we express circuits as mathematical constraints. Each gate becomes one constraint.
+          </p>
+          <p>
+            The matrices <span className="text-purple-600 font-semibold">A</span>,{' '}
+            <span className="text-blue-600 font-semibold">B</span>, and{' '}
+            <span className="text-green-600 font-semibold">C</span> are "selectors" that pick
+            values from the witness vector.
+          </p>
+          <p>
+            When we compute <code className="bg-background-light px-2 py-1 rounded font-mono text-xs">(A·w) × (B·w) = (C·w)</code>,
+            we're checking that the witness satisfies the circuit's constraints.
+          </p>
+          <p>
+            <strong className="text-text-light-primary">Why this matters:</strong> The proof system will
+            use these matrices to create a zero-knowledge proof. The prover must satisfy ALL
+            constraints to create a valid proof!
+          </p>
+        </div>
 
         <div className="italic text-lg mt-8 border-t border-primary/20 pt-4 flex gap-3">
           <span className="material-symbols-outlined text-primary">edit_note</span>

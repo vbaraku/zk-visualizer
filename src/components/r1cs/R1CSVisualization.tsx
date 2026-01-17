@@ -54,6 +54,20 @@ export default function R1CSVisualization({ xValue, targetOutput: _targetOutput 
 
   return (
     <div className="space-y-6">
+      {/* Animation Controls - at the top */}
+      <AnimationControls
+        currentStep={animation.currentStep}
+        totalSteps={animation.totalSteps}
+        isPlaying={animation.isPlaying}
+        speed={animation.speed}
+        onPlay={animation.play}
+        onPause={animation.pause}
+        onReset={animation.reset}
+        onStepForward={animation.stepForward}
+        onStepBack={animation.stepBack}
+        onSpeedChange={animation.setSpeed}
+      />
+
       {/* Step Title and Description */}
       <div className="bg-accent-primary/10 border-l-4 border-accent-primary p-6 rounded">
         <h3 className="text-xl font-semibold text-text-primary mb-2">
@@ -140,48 +154,6 @@ export default function R1CSVisualization({ xValue, targetOutput: _targetOutput 
         cResult={currentStepData.showDotProducts ? cDotW.result : undefined}
         showCheck={currentStepData.showFinalCheck}
       />
-
-      {/* Animation Controls */}
-      <AnimationControls
-        currentStep={animation.currentStep}
-        totalSteps={animation.totalSteps}
-        isPlaying={animation.isPlaying}
-        speed={animation.speed}
-        onPlay={animation.play}
-        onPause={animation.pause}
-        onReset={animation.reset}
-        onStepForward={animation.stepForward}
-        onStepBack={animation.stepBack}
-        onSpeedChange={animation.setSpeed}
-      />
-
-      {/* Educational Notes */}
-      <div className="bg-surface border-2 border-border-subtle rounded-lg p-6">
-        <h4 className="text-lg font-semibold text-text-primary mb-3">
-          Understanding R1CS
-        </h4>
-        <div className="space-y-3 text-text-secondary text-sm">
-          <p>
-            <strong className="text-text-primary">R1CS (Rank-1 Constraint System)</strong> is how
-            we express circuits as mathematical constraints. Each gate becomes one constraint.
-          </p>
-          <p>
-            The matrices <span className="text-accent-secondary font-semibold">A</span>,{' '}
-            <span className="text-signal-processing font-semibold">B</span>, and{' '}
-            <span className="text-signal-success font-semibold">C</span> are "selectors" that pick
-            values from the witness vector.
-          </p>
-          <p>
-            When we compute <code className="bg-background px-2 py-1 rounded font-mono">(A·w) × (B·w) = (C·w)</code>,
-            we're checking that the witness satisfies the circuit's constraints.
-          </p>
-          <p>
-            <strong className="text-text-primary">Why this matters:</strong> The proof system will
-            use these matrices to create a zero-knowledge proof. The prover must satisfy ALL
-            constraints to create a valid proof!
-          </p>
-        </div>
-      </div>
     </div>
   )
 }

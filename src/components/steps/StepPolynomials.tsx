@@ -42,8 +42,30 @@ export default function StepPolynomials({
           </div>
         </div>
 
-        <h3 className="text-lg font-semibold mb-3">The Math Behind the Magic</h3>
+        <h3 className="text-lg font-semibold mb-3">Understanding Polynomial Proofs</h3>
+        <div className="space-y-3 text-text-light-secondary text-sm mb-6">
+          <p>
+            <strong className="text-text-light-primary">Why Polynomials?</strong> They give us a magical
+            property called the <em>Schwartz-Zippel lemma</em>: different polynomials rarely agree
+            at random points.
+          </p>
+          <p>
+            <strong className="text-text-light-primary">The Key Insight:</strong> Instead of checking ALL
+            constraints individually, we encode them into polynomials and check ONE equation at ONE
+            random point.
+          </p>
+          <p>
+            <strong className="text-text-light-primary">QAP (Quadratic Arithmetic Program):</strong> The
+            transformation from R1CS constraints to polynomial form. The equation A(x)·B(x) - C(x) =
+            H(x)·Z(x) must hold for all constraint evaluation points.
+          </p>
+          <p>
+            <strong className="text-text-light-primary">Succinctness:</strong> This is what makes ZK
+            proofs SUCCINCT — constant-size proofs regardless of circuit complexity!
+          </p>
+        </div>
 
+        <h3 className="text-lg font-semibold mb-3">The Math Behind the Magic</h3>
         <div className="space-y-4 text-sm text-text-light-secondary">
           <div>
             <p className="font-bold text-text-light-primary">Lagrange Interpolation:</p>

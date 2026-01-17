@@ -112,46 +112,6 @@ export default function StepCircuit({
           </div>
         </div>
 
-        <h3 className="text-lg font-semibold mb-3">Input Controls</h3>
-        <div className="bg-background-light p-4 rounded-lg mb-6">
-          <div className="space-y-3">
-            <div>
-              <label className="text-sm text-text-light-secondary mb-1 block font-semibold">
-                x (private input):
-              </label>
-              <input
-                type="number"
-                value={inputValue}
-                onChange={(e) => handleInputChange(Number(e.target.value))}
-                className="w-full bg-white border-2 border-gray-300 rounded-lg px-3 py-2 text-text-light-primary font-mono text-lg focus:outline-none focus:border-primary transition-colors"
-              />
-            </div>
-            <div className="text-sm text-text-light-secondary">
-              <div className="flex justify-between mb-1">
-                <span>Output (x²):</span>
-                <span className="font-mono font-bold text-text-light-primary">
-                  {inputValue * inputValue}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Target:</span>
-                <span className="font-mono font-bold text-text-light-primary">
-                  {targetOutput}
-                </span>
-              </div>
-            </div>
-            {!showAnimation && (
-              <button
-                onClick={handleStartAnimation}
-                className="w-full bg-primary text-white px-4 py-2 rounded-lg font-semibold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
-              >
-                <span className="material-symbols-outlined text-sm">play_arrow</span>
-                Animate Computation
-              </button>
-            )}
-          </div>
-        </div>
-
         <h3 className="text-lg font-semibold mb-3">Privacy in the Circuit</h3>
         <p className="text-text-light-secondary text-md leading-relaxed mb-6">
           Notice how the input <code className="px-2 py-1 bg-amber-100 rounded text-amber-800 font-mono text-sm">x</code> is marked as private (🔒)
@@ -179,7 +139,47 @@ export default function StepCircuit({
 
       <CanvasPanel>
         <div className="flex-1 flex flex-col p-6">
-          {/* Animation Controls at top */}
+          {/* Input Controls Panel - compact at top */}
+          <div className="bg-surface border-2 border-border-subtle rounded-lg p-4 mb-4">
+            <div className="flex items-center gap-6">
+              <div className="flex-1">
+                <label className="text-xs text-text-dark-secondary mb-1 block font-semibold">
+                  x (private input):
+                </label>
+                <input
+                  type="number"
+                  value={inputValue}
+                  onChange={(e) => handleInputChange(Number(e.target.value))}
+                  className="w-full bg-background-dark-canvas border-2 border-border-subtle rounded-lg px-3 py-2 text-text-dark-primary font-mono text-lg focus:outline-none focus:border-accent-cyan transition-colors"
+                />
+              </div>
+              <div className="flex-1 text-sm text-text-dark-secondary">
+                <div className="flex justify-between mb-1">
+                  <span>Output (x²):</span>
+                  <span className="font-mono font-bold text-text-dark-primary">
+                    {inputValue * inputValue}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Target:</span>
+                  <span className="font-mono font-bold text-text-dark-primary">
+                    {targetOutput}
+                  </span>
+                </div>
+              </div>
+              {!showAnimation && (
+                <button
+                  onClick={handleStartAnimation}
+                  className="bg-accent-cyan text-slate-900 px-6 py-3 rounded-lg font-semibold hover:bg-accent-cyan/90 transition-colors flex items-center gap-2 shadow-[0_0_15px_rgba(34,211,238,0.3)]"
+                >
+                  <span className="material-symbols-outlined text-sm">play_arrow</span>
+                  Animate
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Animation Controls */}
           {showAnimation && (
             <div className="mb-4">
               <AnimationControls
