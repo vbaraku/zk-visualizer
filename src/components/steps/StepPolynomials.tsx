@@ -92,7 +92,7 @@ export default function StepPolynomials({
       </NotebookPanel>
 
       <CanvasPanel>
-        <div className="p-6 pb-24">
+        <div className="flex-1 p-6 pb-24">
           <PolynomialVisualization xValue={xValue} />
         </div>
 

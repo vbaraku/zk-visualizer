@@ -131,7 +131,7 @@ export default function StepCircuit({
       </NotebookPanel>
 
       <CanvasPanel>
-        <div className="flex flex-col p-6 pb-24">
+        <div className="flex-1 flex flex-col p-6 pb-24">
           {/* Animation Controls - always visible at top */}
           <div className="mb-4">
             <AnimationControls
