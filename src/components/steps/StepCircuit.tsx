@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react'
+import NotebookPanel from '../layout/NotebookPanel'
+import CanvasPanel from '../layout/CanvasPanel'
 import CircuitCanvas from '../circuit/CircuitCanvas'
 import AnimationControls from '../circuit/AnimationControls'
 import ComputationLog from '../circuit/ComputationLog'
@@ -83,27 +85,76 @@ export default function StepCircuit({
   }
 
   return (
-    <div>
-      <h2 className="text-3xl font-bold text-text-primary mb-6">
-        Step 2: The Circuit
-      </h2>
+    <>
+      <NotebookPanel>
+        <h2 className="text-xl font-bold mb-4 font-serif-edu">2. The Arithmetic Circuit</h2>
 
-      {/* Info Panel */}
-      <div className="bg-accent-primary/10 border-l-4 border-accent-primary p-6 mb-6 rounded">
-        <h3 className="text-xl font-semibold text-text-primary mb-3">
-          Arithmetic Circuit Visualization
-        </h3>
-        <p className="text-text-secondary">
-          Watch how your value flows through the circuit! The circuit takes your
-          secret input, processes it, and produces a public output.
+        <p className="text-text-light-secondary text-md leading-relaxed mb-6 font-serif-edu">
+          A circuit is a way to represent a computation using basic operations (addition, multiplication).
+          Think of it like a flowchart for math operations. The visualization shows exactly how values flow through the circuit.
         </p>
-      </div>
 
-      {/* Circuit Canvas and Controls Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        {/* Left/Top: Circuit Canvas (takes 2 columns on large screens) */}
-        <div className="lg:col-span-2">
-          <div style={{ height: '400px' }} className="mb-4">
+        <div className="bg-background-light p-5 rounded-xl border-l-4 border-primary mb-8 relative">
+          <span className="absolute -right-4 -top-2 handwritten bg-white px-2 border rounded-md shadow-sm text-sm">
+            Our Circuit
+          </span>
+          <div className="text-md space-y-2 font-serif-edu">
+            <p>Input: <span className="text-primary font-mono">x = {xValue}</span> (private 🔒)</p>
+            <p>Operation: <span className="text-primary">x × x</span></p>
+            <p>Output: <span className="text-primary font-mono">out = {userOutput}</span> (public)</p>
+          </div>
+        </div>
+
+        <h3 className="text-lg font-bold mb-3 font-serif-edu">Privacy in the Circuit</h3>
+        <p className="text-text-light-secondary text-md leading-relaxed mb-6 font-serif-edu">
+          Notice how the input <code className="px-2 py-1 bg-amber-100 rounded text-amber-800 font-mono text-sm">x</code> is marked as private (🔒)
+          while the output <code className={`px-2 py-1 rounded font-mono text-sm ${
+            isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+          }`}>out</code> is public.
+          The zero-knowledge proof will convince verifiers that you know an x that produces the correct output,
+          without revealing what x is!
+        </p>
+
+        <h3 className="text-lg font-bold mb-3 font-serif-edu">Circuit Code (Circom)</h3>
+        <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm border border-slate-700 mb-6">
+{`template Square() {
+    signal private input x;  // Secret: ${xValue}
+    signal output out;       // Public: ${userOutput}
+
+    out <== x * x;           // Constraint
+}`}
+        </pre>
+
+        <div className="handwritten text-lg mt-8 border-t border-primary/20 pt-4 flex gap-3">
+          <span className="material-symbols-outlined text-primary">edit_note</span>
+          <div>
+            <p className="mb-2">"The circuit defines <em>what</em> computation is performed, while keeping the inputs private."</p>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <div className="mt-8 flex justify-between">
+          <button
+            onClick={onPrevious}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-gray-300 text-text-light-primary hover:bg-gray-100 transition-all"
+          >
+            <span className="material-symbols-outlined">arrow_back</span>
+            <span>Previous</span>
+          </button>
+          <button
+            onClick={onNext}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition-all"
+          >
+            <span>Next Step</span>
+            <span className="material-symbols-outlined">arrow_forward</span>
+          </button>
+        </div>
+      </NotebookPanel>
+
+      <CanvasPanel>
+        <div className="flex-1 flex flex-col p-6">
+          {/* Circuit Visualization */}
+          <div className="flex-1 mb-4">
             <CircuitCanvas
               circuit={circuit}
               witnessValues={showAnimation ? witnessValues : completeWitnessValues}
@@ -113,50 +164,55 @@ export default function StepCircuit({
             />
           </div>
 
-          {/* Animation Controls */}
+          {/* Animation Controls (when animated) */}
           {showAnimation && (
-            <AnimationControls
-              currentStep={animation.currentStep}
-              totalSteps={animation.totalSteps}
-              isPlaying={animation.isPlaying}
-              speed={animation.speed}
-              onPlay={animation.play}
-              onPause={animation.pause}
-              onReset={animation.reset}
-              onStepForward={animation.stepForward}
-              onStepBack={animation.stepBack}
-              onSpeedChange={animation.setSpeed}
-            />
+            <div className="mb-4">
+              <AnimationControls
+                currentStep={animation.currentStep}
+                totalSteps={animation.totalSteps}
+                isPlaying={animation.isPlaying}
+                speed={animation.speed}
+                onPlay={animation.play}
+                onPause={animation.pause}
+                onReset={animation.reset}
+                onStepForward={animation.stepForward}
+                onStepBack={animation.stepBack}
+                onSpeedChange={animation.setSpeed}
+              />
+            </div>
           )}
         </div>
 
-        {/* Right: Computation Log and Input Controls */}
-        <div className="space-y-4">
+        {/* Right Side Panel - Controls */}
+        <div className="absolute top-6 right-6 w-80 space-y-4">
           {/* Input Controls */}
-          <div className="bg-surface border-2 border-border-subtle rounded-lg p-4">
-            <h4 className="font-semibold text-text-primary mb-3">Input Value</h4>
+          <div className="bg-surface border border-dark-border rounded-xl p-4 shadow-xl">
+            <h4 className="font-semibold text-text-dark-primary mb-3 flex items-center gap-2">
+              <span className="material-symbols-outlined text-accent-cyan text-sm">tune</span>
+              Input Controls
+            </h4>
             <div className="space-y-3">
               <div>
-                <label className="text-sm text-text-secondary mb-1 block">
+                <label className="text-xs text-text-dark-secondary mb-1 block uppercase font-bold">
                   x (private input):
                 </label>
                 <input
                   type="number"
                   value={inputValue}
                   onChange={(e) => handleInputChange(Number(e.target.value))}
-                  className="w-full bg-background border-2 border-border-subtle rounded-lg px-3 py-2 text-text-primary font-mono text-lg focus:outline-none focus:border-accent-primary transition-colors"
+                  className="w-full bg-slate-900/80 border-2 border-dark-border rounded-lg px-3 py-2 text-text-dark-primary font-mono text-lg focus:outline-none focus:border-accent-cyan transition-colors"
                 />
               </div>
-              <div className="text-sm text-text-secondary">
+              <div className="text-sm text-text-dark-secondary">
                 <div className="flex justify-between mb-1">
                   <span>Output (x²):</span>
-                  <span className="font-mono font-bold text-text-primary">
+                  <span className="font-mono font-bold text-text-dark-primary">
                     {inputValue * inputValue}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Target:</span>
-                  <span className="font-mono font-bold text-text-primary">
+                  <span className="font-mono font-bold text-text-dark-primary">
                     {targetOutput}
                   </span>
                 </div>
@@ -164,9 +220,10 @@ export default function StepCircuit({
               {!showAnimation && (
                 <button
                   onClick={handleStartAnimation}
-                  className="w-full bg-accent-primary text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-600 transition-colors"
+                  className="w-full bg-accent-cyan text-slate-900 px-4 py-2 rounded-lg font-bold hover:bg-accent-cyan/90 transition-colors flex items-center justify-center gap-2"
                 >
-                  ▶ Animate Computation
+                  <span className="material-symbols-outlined">play_arrow</span>
+                  Animate Computation
                 </button>
               )}
             </div>
@@ -174,129 +231,38 @@ export default function StepCircuit({
 
           {/* Computation Log */}
           {showAnimation && (
-            <ComputationLog
-              steps={computationSteps}
-              currentStep={animation.currentStep}
-            />
+            <div className="bg-surface border border-dark-border rounded-xl p-4 shadow-xl max-h-96 overflow-y-auto custom-scrollbar-dark">
+              <ComputationLog
+                steps={computationSteps}
+                currentStep={animation.currentStep}
+              />
+            </div>
           )}
-        </div>
-      </div>
 
-      {/* Legend */}
-      <div className="mb-6 p-4 bg-surface border border-border-subtle rounded-lg">
-        <div className="flex items-center justify-center gap-8 text-sm flex-wrap">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-signal-private rounded"></div>
-            <span className="text-text-secondary">Private (secret)</span>
+          {/* Legend */}
+          <div className="bg-surface border border-dark-border rounded-xl p-4 shadow-xl">
+            <h5 className="text-xs font-bold text-text-dark-secondary uppercase mb-3">Legend</h5>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-signal-private rounded"></div>
+                <span className="text-text-dark-secondary">Private (secret)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-signal-processing rounded"></div>
+                <span className="text-text-dark-secondary">Processing</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-signal-success rounded"></div>
+                <span className="text-text-dark-secondary">Public (correct)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-signal-error rounded"></div>
+                <span className="text-text-dark-secondary">Public (wrong)</span>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-signal-processing rounded"></div>
-            <span className="text-text-secondary">Processing</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-signal-success rounded"></div>
-            <span className="text-text-secondary">Public (correct)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-signal-error rounded"></div>
-            <span className="text-text-secondary">Public (wrong)</span>
-          </div>
         </div>
-      </div>
-
-      {/* Explanation Sections */}
-      <div className="space-y-4 mb-8">
-        <div>
-          <h4 className="font-semibold text-text-primary mb-2">
-            What is a Circuit?
-          </h4>
-          <p className="text-text-secondary">
-            A circuit is a way to represent a computation using basic operations
-            (addition, multiplication). Think of it like a flowchart for math
-            operations. The animated diagram above shows exactly how values flow
-            through the circuit.
-          </p>
-        </div>
-
-        <div>
-          <h4 className="font-semibold text-text-primary mb-2">Our Circuit</h4>
-          <p className="text-text-secondary">
-            Our circuit is simple: it takes a private input{' '}
-            <code className="bg-background px-2 py-1 rounded text-signal-private font-mono border border-border-subtle">
-              x = {xValue}
-            </code>
-            , multiplies it by itself in the gate, and outputs{' '}
-            <code className="bg-background px-2 py-1 rounded text-text-primary font-mono border border-border-subtle">
-              {userOutput}
-            </code>
-            .
-            {isCorrect ? (
-              <span className="text-signal-success font-semibold">
-                {' '}
-                ✓ This matches our target of {targetOutput}!
-              </span>
-            ) : (
-              <span className="text-signal-error font-semibold">
-                {' '}
-                ✗ This doesn't match our target of {targetOutput}.
-              </span>
-            )}
-          </p>
-        </div>
-
-        <div>
-          <h4 className="font-semibold text-text-primary mb-2">
-            Privacy in the Circuit
-          </h4>
-          <p className="text-text-secondary">
-            Notice how the input{' '}
-            <code className="bg-background px-2 py-1 rounded text-signal-private font-mono border border-border-subtle">
-              x
-            </code>{' '}
-            is marked as private (🔒) while the output{' '}
-            <code
-              className={`bg-background px-2 py-1 rounded ${
-                isCorrect ? 'text-signal-success' : 'text-signal-error'
-              } font-mono border border-border-subtle`}
-            >
-              out
-            </code>{' '}
-            is public. The zero-knowledge proof will convince verifiers that you
-            know an x that produces the correct output, without revealing what x
-            is!
-          </p>
-        </div>
-
-        <div>
-          <h4 className="font-semibold text-text-primary mb-2">
-            Circuit Code (Circom)
-          </h4>
-          <pre className="bg-slate-950 text-text-primary p-4 rounded-lg overflow-x-auto text-sm border border-border-subtle">
-            {`template Square() {
-    signal private input x;  // Your secret: ${xValue}
-    signal output out;       // Public result: ${userOutput}
-
-    out <== x * x;           // Constraint: out must equal x²
-}`}
-          </pre>
-        </div>
-      </div>
-
-      {/* Navigation Buttons */}
-      <div className="flex justify-between">
-        <button
-          onClick={onPrevious}
-          className="bg-surface text-text-primary border-2 border-border-subtle px-6 py-3 rounded-lg font-semibold hover:bg-slate-700 transition-colors"
-        >
-          ← Previous
-        </button>
-        <button
-          onClick={onNext}
-          className="bg-accent-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-600 transition-colors"
-        >
-          Next: Constraints →
-        </button>
-      </div>
-    </div>
+      </CanvasPanel>
+    </>
   )
 }

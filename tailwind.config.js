@@ -7,19 +7,29 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Background colors
-        background: '#0F172A', // slate-900
-        surface: '#1E293B',    // slate-800
+        // Dual-tone design system colors
+        primary: '#137fec',
+        'accent-cyan': '#22d3ee',
 
-        // Border colors
+        // Light side (notebook panel)
+        'background-light': '#f6f7f8',
+        'text-light-primary': '#0d141b',
+        'text-light-secondary': '#4c739a',
+
+        // Dark side (canvas panel)
+        'background-dark-canvas': '#0f172a',
+        background: '#0F172A', // Keep for compatibility
+        surface: '#1e293b',
+        'dark-border': '#334155',
+        'dark-border-light': '#475569',
+        'text-dark-primary': '#f1f5f9',
+        'text-dark-secondary': '#94a3b8',
+
+        // Legacy colors (keep for backward compatibility during migration)
         'border-subtle': '#334155', // slate-700
-
-        // Text colors
         'text-primary': '#F8FAFC',   // slate-50
         'text-secondary': '#94A3B8', // slate-400
-
-        // Accent colors
-        'accent-primary': '#6366F1',   // indigo-500
+        'accent-primary': '#22d3ee',   // Updated to cyan
         'accent-secondary': '#8B5CF6', // purple-500
 
         // Signal colors (used throughout the app)
@@ -28,6 +38,17 @@ export default {
         'signal-processing': '#3B82F6', // blue-500
         'signal-error': '#EF4444',    // red-500
         'signal-success': '#22C55E',  // green-500
+      },
+      fontFamily: {
+        'display': ['Space Grotesk', 'sans-serif'],
+        'serif-edu': ['Cormorant Garamond', 'serif'],
+        'sans': ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+      },
+      borderRadius: {
+        'DEFAULT': '0.25rem',
+        'lg': '0.5rem',
+        'xl': '0.75rem',
+        'full': '9999px',
       },
     },
   },

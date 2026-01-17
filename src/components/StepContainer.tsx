@@ -113,44 +113,44 @@ export default function StepContainer({
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      {/* Progress indicator */}
-      <div className="mb-8">
-        <div className="flex justify-between items-center">
-          {STEPS.map((step, index) => (
-            <div key={step.id} className="flex items-center flex-1">
-              <div className="flex flex-col items-center">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all ${
-                    step.order <= currentStepInfo.order
-                      ? 'bg-accent-primary text-white'
-                      : 'bg-surface text-text-secondary border-2 border-border-subtle'
-                  }`}
-                >
-                  {step.order}
-                </div>
-                <span className="text-xs mt-2 text-center text-text-secondary hidden sm:block">
-                  {step.title}
-                </span>
-              </div>
-              {index < STEPS.length - 1 && (
-                <div
-                  className={`h-1 flex-1 mx-2 rounded transition-all ${
-                    step.order < currentStepInfo.order
-                      ? 'bg-accent-primary'
-                      : 'bg-border-subtle'
-                  }`}
-                />
-              )}
-            </div>
-          ))}
+    <main className="flex flex-col h-[calc(100vh-64px)] overflow-hidden">
+      {/* Breadcrumb & Mode Selector */}
+      <div className="bg-white border-b border-[#e7edf3] px-10 py-4 flex items-center justify-between">
+        <div className="flex flex-col">
+          <div className="flex items-center gap-2 mb-1">
+            <a className="text-text-light-secondary text-xs font-medium uppercase tracking-wider" href="#">
+              Protocols
+            </a>
+            <span className="text-text-light-secondary text-xs">/</span>
+            <a className="text-text-light-secondary text-xs font-medium uppercase tracking-wider" href="#">
+              Zero-Knowledge
+            </a>
+            <span className="text-text-light-secondary text-xs">/</span>
+            <span className="text-text-light-primary text-xs font-bold uppercase tracking-wider">
+              Circuit Proofs
+            </span>
+          </div>
+          <h1 className="text-2xl font-black tracking-tight">{currentStepInfo.title}</h1>
+        </div>
+        <div className="flex gap-2">
+          <div className="flex border rounded-lg overflow-hidden bg-background-light p-1">
+            <button className="px-3 py-1.5 text-xs font-bold bg-white shadow-sm rounded-md text-primary">
+              Notebook
+            </button>
+            <button className="px-3 py-1.5 text-xs font-medium text-text-light-secondary hover:text-text-light-primary">
+              Interactive
+            </button>
+            <button className="px-3 py-1.5 text-xs font-medium text-text-light-secondary hover:text-text-light-primary">
+              Code
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Step content */}
-      <div className="bg-surface rounded-lg shadow-xl p-8 border border-border-subtle">
+      {/* Split-Panel Layout */}
+      <div className="flex flex-1 overflow-hidden">
         {renderStep()}
       </div>
-    </div>
+    </main>
   )
 }
