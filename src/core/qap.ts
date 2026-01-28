@@ -8,7 +8,6 @@ import {
   Polynomial,
   QAPData,
   PolynomialAnimationStep,
-  PolynomialCurve,
   Point,
 } from '../types/polynomial'
 import {
@@ -17,8 +16,6 @@ import {
   multiply,
   subtract,
   divide,
-  evaluate,
-  formatPolynomial,
 } from './polynomial'
 
 /**

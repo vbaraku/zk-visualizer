@@ -72,55 +72,21 @@ export default function StepCircuit({
     [computationSteps, animation.currentStep]
   )
 
-  // Complete witness values (for final state)
-  const completeWitnessValues = useMemo(
-    () => ({
-      x: xValue,
-      out: xValue * xValue,
-    }),
-    [xValue]
-  )
+  // Initial state: show "?"
+  const initialWitnessValues = useMemo(() => ({ x: xValue, out: '?' as any }), [xValue])
 
-  // Initial state: show "?" for values that haven't been computed
-  const initialWitnessValues = useMemo(
-    () => ({
-      x: xValue, // Input is known
-    }),
-    [xValue]
-  )
+  // Display values: show animation progress or initial state
+  const displayWitnessValues = hasStartedAnimation ? witnessValues : initialWitnessValues
 
-  // Handle play - track that animation has started
   const handlePlay = () => {
     setHasStartedAnimation(true)
     animation.play()
   }
 
-  // Handle reset
   const handleReset = () => {
     setHasStartedAnimation(false)
     animation.reset()
   }
-
-  // Determine which witness values to show
-  const displayWitnessValues = useMemo(() => {
-    if (!hasStartedAnimation) {
-      // Before animation: show input, output as "?"
-      return initialWitnessValues
-    }
-    if (animation.currentStep >= computationSteps.length - 1) {
-      // Animation complete: show final values
-      return completeWitnessValues
-    }
-    // During animation: show current step values
-    return witnessValues
-  }, [
-    hasStartedAnimation,
-    animation.currentStep,
-    computationSteps.length,
-    initialWitnessValues,
-    completeWitnessValues,
-    witnessValues,
-  ])
 
   return (
     <>
@@ -128,30 +94,24 @@ export default function StepCircuit({
         <h2 className="text-xl font-bold mb-4">2. The Circuit</h2>
 
         <p className="text-text-light-secondary text-md leading-relaxed mb-6">
-          A circuit is a way to represent a computation using basic operations (addition,
-          multiplication). Think of it like a flowchart for math operations.
+          A ZK circuit is a representation of computation as a graph of <strong>signals</strong> (wires)
+          and <strong>gates</strong> (operations). Unlike regular code, circuits are fixed structures—they
+          don't have loops or conditionals.
         </p>
 
         <div className="bg-background-light p-5 rounded-xl border-l-4 border-primary mb-8 relative">
           <span className="absolute -right-4 -top-2 italic bg-white px-2 border rounded-md shadow-sm text-sm text-text-light-secondary">
-            Our Circuit
+            Key Insight
           </span>
-          <div className="text-md space-y-2 font-mono">
-            <p>
-              Input: <span className="text-amber-600">x = {xValue}</span> (private 🔒)
-            </p>
-            <p>
-              Operation: <span className="text-primary">x × x</span>
-            </p>
-            <p>
-              Output: <span className="text-green-600">out = {userOutput}</span> (public)
-            </p>
+          <div className="text-md space-y-2">
+            <p>• <strong className="text-amber-600">Private inputs</strong> (🔒) — values the prover keeps secret</p>
+            <p>• <strong className="text-green-600">Public outputs</strong> (👁️) — values anyone can see</p>
+            <p>• <strong className="text-purple-600">Gates</strong> — operations that connect signals</p>
           </div>
         </div>
 
-        <h3 className="text-lg font-semibold mb-3">How Circuits Work</h3>
         <p className="text-text-light-secondary text-md leading-relaxed mb-6">
-          Values flow through the circuit from inputs to outputs. Each gate performs an operation.
+          Each gate performs an operation.
           Press <strong>Play</strong> to watch the computation happen step by step.
         </p>
 
@@ -191,9 +151,9 @@ export default function StepCircuit({
       </NotebookPanel>
 
       <CanvasPanel>
-        <div className="flex-1 flex flex-col p-6 pb-24">
-          {/* Animation Controls */}
-          <div className="mb-4">
+        <div className="flex-1 flex flex-col p-4 md:p-6 pb-24">
+          {/* Animation Controls - compact on mobile */}
+          <div className="mb-3 md:mb-4 scale-90 origin-top-left md:scale-100">
             <AnimationControls
               currentStep={animation.currentStep}
               totalSteps={animation.totalSteps}
@@ -212,22 +172,22 @@ export default function StepCircuit({
           </div>
 
           {/* Context Bar - shows current values (read-only) */}
-          <div className="bg-surface border-2 border-border-subtle rounded-lg p-4 mb-4">
-            <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-6">
+          <div className="bg-surface border-2 border-border-subtle rounded-lg p-3 md:p-4 mb-3 md:mb-4">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 text-sm">
+              <div className="flex flex-wrap items-center gap-3 md:gap-6">
                 <div className="flex items-center gap-2">
                   <span className="text-amber-400">🔒</span>
-                  <span className="text-text-dark-secondary">Private input:</span>
+                  <span className="text-text-dark-secondary text-xs md:text-sm">Private:</span>
                   <span className="font-mono font-bold text-amber-400">x = {xValue}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-green-400">👁️</span>
-                  <span className="text-text-dark-secondary">Target output:</span>
+                  <span className="text-text-dark-secondary text-xs md:text-sm">Target:</span>
                   <span className="font-mono font-bold text-green-400">out = {targetOutput}</span>
                 </div>
               </div>
               <div
-                className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                className={`px-3 py-1 rounded-full text-xs font-semibold self-start md:self-auto ${
                   isCorrect
                     ? 'bg-accent-cyan/20 text-accent-cyan'
                     : 'bg-signal-error/20 text-signal-error'
@@ -238,8 +198,8 @@ export default function StepCircuit({
             </div>
           </div>
 
-          {/* Circuit Visualization - main hero */}
-          <div className="flex-1 overflow-y-auto custom-scrollbar-dark min-h-[300px]">
+          {/* Circuit Visualization - EXPLICIT HEIGHT for mobile */}
+          <div className="h-[250px] md:h-auto md:flex-1 overflow-hidden">
             <CircuitCanvas
               circuit={circuit}
               witnessValues={displayWitnessValues}
@@ -250,9 +210,9 @@ export default function StepCircuit({
           </div>
 
           {/* Computation Log - always visible */}
-          <div className="mt-4 bg-surface border-2 border-border-subtle rounded-lg p-4">
+          <div className="mt-3 md:mt-4 bg-surface border-2 border-border-subtle rounded-lg p-3 md:p-4">
             {!hasStartedAnimation ? (
-              <p className="text-text-dark-secondary text-sm">
+              <p className="text-text-dark-secondary text-xs md:text-sm">
                 Press <strong>Play</strong> to watch values flow through the circuit...
               </p>
             ) : (

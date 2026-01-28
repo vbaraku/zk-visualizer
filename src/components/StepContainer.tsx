@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { Step, STEPS } from '../types'
 import StepProblem from './steps/StepProblem'
 import StepCircuit from './steps/StepCircuit'
@@ -26,7 +27,17 @@ export default function StepContainer({
   setXValue,
   targetOutput,
 }: StepContainerProps) {
+  const mainRef = useRef<HTMLElement>(null)
   const currentStepInfo = STEPS.find((s) => s.id === currentStep)!
+
+  // Scroll to top when step changes
+  useEffect(() => {
+    if (mainRef.current) {
+      mainRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+    // Also scroll window for mobile where main might not be the scroll container
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [currentStep])
 
   const handleNext = () => {
     const nextIndex = currentStepInfo.order
@@ -138,7 +149,10 @@ export default function StepContainer({
   }
 
   return (
-    <main className="flex h-[calc(100vh-64px)] overflow-hidden">
+    <main 
+      ref={mainRef}
+      className="flex flex-col md:flex-row h-auto md:h-[calc(100vh-49px)] overflow-y-auto md:overflow-hidden"
+    >
       {renderStep()}
     </main>
   )
