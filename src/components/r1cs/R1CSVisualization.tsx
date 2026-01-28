@@ -1,5 +1,8 @@
 /**
  * R1CSVisualization - Main container for R1CS transformation animation
+ * 
+ * Mobile: Matrices stack vertically
+ * Desktop: 3-column grid
  */
 
 import { useMemo } from 'react'
@@ -42,31 +45,33 @@ export default function R1CSVisualization({ xValue, targetOutput: _targetOutput 
   )
 
   return (
-    <div className="space-y-6">
-      {/* Animation Controls */}
-      <AnimationControls
-        currentStep={animation.currentStep}
-        totalSteps={animation.totalSteps}
-        isPlaying={animation.isPlaying}
-        speed={animation.speed}
-        onPlay={animation.play}
-        onPause={animation.pause}
-        onReset={animation.reset}
-        onStepForward={animation.stepForward}
-        onStepBack={animation.stepBack}
-        onSpeedChange={animation.setSpeed}
-      />
+    <div className="space-y-4 md:space-y-6">
+      {/* Animation Controls - compact on mobile */}
+      <div className="scale-90 origin-top-left md:scale-100">
+        <AnimationControls
+          currentStep={animation.currentStep}
+          totalSteps={animation.totalSteps}
+          isPlaying={animation.isPlaying}
+          speed={animation.speed}
+          onPlay={animation.play}
+          onPause={animation.pause}
+          onReset={animation.reset}
+          onStepForward={animation.stepForward}
+          onStepBack={animation.stepBack}
+          onSpeedChange={animation.setSpeed}
+        />
+      </div>
 
       {/* Step Title and Description */}
-      <div className="bg-accent-cyan/10 border-l-4 border-accent-cyan p-4 rounded">
-        <h3 className="text-lg font-semibold text-text-dark-primary mb-1">
+      <div className="bg-accent-cyan/10 border-l-4 border-accent-cyan p-3 md:p-4 rounded">
+        <h3 className="text-base md:text-lg font-semibold text-text-dark-primary mb-1">
           {currentStepData.title}
         </h3>
-        <p className="text-text-dark-secondary text-sm">{currentStepData.description}</p>
+        <p className="text-text-dark-secondary text-xs md:text-sm">{currentStepData.description}</p>
       </div>
 
       {/* Circuit Reminder */}
-      <div className="text-center text-text-dark-secondary text-sm">
+      <div className="text-center text-text-dark-secondary text-xs md:text-sm">
         Our constraint: <span className="font-mono text-text-dark-primary">x × x = out</span>
       </div>
 
@@ -81,8 +86,8 @@ export default function R1CSVisualization({ xValue, targetOutput: _targetOutput 
         }
       />
 
-      {/* Three Matrices */}
-      <div className="grid grid-cols-3 gap-4">
+      {/* Three Matrices - Stack on mobile, grid on desktop */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
         <MatrixView
           label="A (Left)"
           values={constraint.a}

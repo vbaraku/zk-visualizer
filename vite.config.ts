@@ -9,5 +9,10 @@ export default defineConfig({
   },
   build: {
     target: 'esnext'
+  },
+  server: {
+    allowedHosts: [
+      'nakisha-nonsegregative-overscrupulously.ngrok-free.dev'
+    ]
   }
 })

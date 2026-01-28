@@ -92,13 +92,13 @@ export default function StepWitness({
       </NotebookPanel>
 
       <CanvasPanel>
-        <div className="flex-1 flex flex-col items-center justify-center p-8 pb-24">
+        <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 pb-24">
           {/* View Mode Toggle */}
-          <div className="mb-8">
+          <div className="mb-6 md:mb-8">
             <div className="bg-surface border-2 border-border-subtle rounded-full p-1 flex">
               <button
                 onClick={() => setViewMode('prover')}
-                className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${
+                className={`px-3 md:px-6 py-2 rounded-full text-xs md:text-sm font-semibold transition-all ${
                   viewMode === 'prover'
                     ? 'bg-amber-500 text-slate-900'
                     : 'text-text-dark-secondary hover:text-text-dark-primary'
@@ -108,7 +108,7 @@ export default function StepWitness({
               </button>
               <button
                 onClick={() => setViewMode('verifier')}
-                className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${
+                className={`px-3 md:px-6 py-2 rounded-full text-xs md:text-sm font-semibold transition-all ${
                   viewMode === 'verifier'
                     ? 'bg-green-500 text-slate-900'
                     : 'text-text-dark-secondary hover:text-text-dark-primary'
@@ -122,18 +122,18 @@ export default function StepWitness({
           {/* Witness Vector Visualization */}
           <div className="w-full max-w-2xl">
             <motion.div
-              className="bg-surface border-2 border-border-subtle rounded-2xl p-8"
+              className="bg-surface border-2 border-border-subtle rounded-2xl p-4 md:p-8"
               layout
             >
               {/* Vector Label */}
-              <div className="text-center mb-6">
-                <span className="text-2xl font-bold text-accent-cyan font-mono">w</span>
-                <span className="text-xl text-text-dark-secondary ml-2">=</span>
+              <div className="text-center mb-4 md:mb-6">
+                <span className="text-xl md:text-2xl font-bold text-accent-cyan font-mono">w</span>
+                <span className="text-lg md:text-xl text-text-dark-secondary ml-2">=</span>
               </div>
 
               {/* Vector Elements */}
-              <div className="flex items-center justify-center gap-2">
-                <span className="text-4xl text-text-dark-secondary font-mono">[</span>
+              <div className="flex items-center justify-center gap-1 md:gap-2">
+                <span className="text-2xl md:text-4xl text-text-dark-secondary font-mono">[</span>
                 
                 {witnessVector.map((item, idx) => (
                   <div key={item.label} className="flex items-center">
@@ -144,14 +144,14 @@ export default function StepWitness({
                       transition={{ delay: idx * 0.1 }}
                     >
                       {/* Label */}
-                      <span className={`text-xs font-mono mb-2 ${
+                      <span className={`text-[10px] md:text-xs font-mono mb-1 md:mb-2 ${
                         item.color === 'blue' ? 'text-blue-400' :
                         item.color === 'amber' ? 'text-amber-400' : 'text-green-400'
                       }`}>
                         {item.label}
                       </span>
                       
-                      {/* Value Box */}
+                      {/* Value Box - responsive sizes */}
                       <AnimatePresence mode="wait">
                         <motion.div
                           key={`${item.label}-${viewMode}`}
@@ -159,7 +159,7 @@ export default function StepWitness({
                           animate={{ rotateY: 0, opacity: 1 }}
                           exit={{ rotateY: -90, opacity: 0 }}
                           transition={{ duration: 0.3 }}
-                          className={`w-20 h-20 rounded-xl flex items-center justify-center font-mono text-2xl font-bold border-2 ${
+                          className={`w-14 h-14 md:w-20 md:h-20 rounded-lg md:rounded-xl flex items-center justify-center font-mono text-lg md:text-2xl font-bold border-2 ${
                             item.isPrivate && viewMode === 'verifier'
                               ? 'bg-slate-800 border-slate-600 text-slate-500'
                               : item.color === 'blue'
@@ -174,7 +174,7 @@ export default function StepWitness({
                       </AnimatePresence>
                       
                       {/* Privacy Indicator */}
-                      <span className={`text-xs mt-2 ${
+                      <span className={`text-[10px] md:text-xs mt-1 md:mt-2 ${
                         item.isPrivate ? 'text-amber-400' : 'text-green-400'
                       }`}>
                         {item.isPrivate ? '🔒 private' : '🔓 public'}
@@ -183,12 +183,12 @@ export default function StepWitness({
                     
                     {/* Comma separator */}
                     {idx < witnessVector.length - 1 && (
-                      <span className="text-2xl text-text-dark-secondary font-mono mx-2">,</span>
+                      <span className="text-lg md:text-2xl text-text-dark-secondary font-mono mx-1 md:mx-2">,</span>
                     )}
                   </div>
                 ))}
                 
-                <span className="text-4xl text-text-dark-secondary font-mono">]</span>
+                <span className="text-2xl md:text-4xl text-text-dark-secondary font-mono">]</span>
               </div>
 
               {/* View Mode Description */}
@@ -196,45 +196,45 @@ export default function StepWitness({
                 key={viewMode}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="mt-8 text-center"
+                className="mt-4 md:mt-8 text-center"
               >
                 {viewMode === 'prover' ? (
-                  <p className="text-amber-400 text-sm">
+                  <p className="text-amber-400 text-xs md:text-sm">
                     <span className="font-bold">Prover knows everything:</span> x = {xValue} enables proof generation.
                   </p>
                 ) : (
-                  <p className="text-green-400 text-sm">
+                  <p className="text-green-400 text-xs md:text-sm">
                     <span className="font-bold">Verifier only sees public values:</span> x is hidden, but proof still verifies!
                   </p>
                 )}
               </motion.div>
             </motion.div>
+          </div>
 
-            {/* Flow Diagram: Witness → Proof */}
-            <div className="mt-8 flex items-center justify-center gap-4">
-              <div className="bg-surface border border-border-subtle rounded-lg px-4 py-2 text-sm">
-                <span className="text-amber-400 font-mono">witness</span>
+          {/* Flow Diagram - hidden on mobile to save space */}
+          <div className="hidden md:block mt-8 w-full max-w-3xl">
+            <div className="flex items-center justify-center gap-4">
+              <div className="bg-surface border-2 border-amber-500/50 rounded-lg p-4 text-center">
+                <span className="text-amber-400 text-sm font-semibold">Witness</span>
+                <p className="text-xs text-text-dark-secondary mt-1">w = [1, {xValue}, {targetOutput}]</p>
               </div>
-              <motion.div
-                animate={{ x: [0, 5, 0] }}
-                transition={{ repeat: Infinity, duration: 1.5 }}
-                className="text-accent-cyan text-2xl"
-              >
-                →
-              </motion.div>
-              <div className="bg-surface border border-border-subtle rounded-lg px-4 py-2 text-sm">
-                <span className="text-text-dark-secondary">snarkjs.groth16.prove()</span>
+              
+              <div className="flex items-center text-text-dark-secondary">
+                <span className="text-2xl">→</span>
               </div>
-              <motion.div
-                animate={{ x: [0, 5, 0] }}
-                transition={{ repeat: Infinity, duration: 1.5, delay: 0.3 }}
-                className="text-accent-cyan text-2xl"
-              >
-                →
-              </motion.div>
-              <div className="bg-surface border border-border-subtle rounded-lg px-4 py-2 text-sm">
-                <span className="text-green-400 font-mono">proof</span>
-                <span className="text-text-dark-secondary ml-1">(x hidden)</span>
+              
+              <div className="bg-surface border-2 border-purple-500/50 rounded-lg p-4 text-center">
+                <span className="text-purple-400 text-sm font-semibold">snarkjs.groth16.prove()</span>
+                <p className="text-xs text-text-dark-secondary mt-1">Polynomial magic ✨</p>
+              </div>
+              
+              <div className="flex items-center text-text-dark-secondary">
+                <span className="text-2xl">→</span>
+              </div>
+              
+              <div className="bg-surface border-2 border-green-500/50 rounded-lg p-4 text-center">
+                <span className="text-green-400 text-sm font-semibold">proof</span>
+                <p className="text-xs text-text-dark-secondary mt-1">x is hidden!</p>
               </div>
             </div>
           </div>

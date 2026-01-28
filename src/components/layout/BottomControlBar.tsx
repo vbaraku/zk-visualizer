@@ -8,10 +8,14 @@ interface BottomControlBarProps {
 }
 
 const STEP_NAMES = ['Problem', 'Circuit', 'Constraints', 'Polynomials', 'Witness', 'Proof', 'Verification']
+const STEP_NAMES_SHORT = ['1', '2', '3', '4', '5', '6', '7']
 
 /**
  * BottomControlBar - Unified control bar for step navigation
  * Appears at the bottom of the canvas panel with dark, blurred styling
+ * 
+ * Mobile: Simplified with just progress dots and arrows
+ * Desktop: Full timeline with step names
  */
 export default function BottomControlBar({
   currentStepIndex,
@@ -25,9 +29,25 @@ export default function BottomControlBar({
   const progress = ((currentStepIndex + 1) / totalSteps) * 100
 
   return (
-    <div className={`sticky bottom-0 z-40 h-20 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 flex items-center px-10 gap-10 ${className}`}>
-      {/* Progress Timeline */}
-      <div className="flex-1 relative">
+    <div className={`sticky bottom-0 z-40 h-16 md:h-20 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 flex items-center px-4 md:px-10 gap-4 md:gap-10 ${className}`}>
+      {/* Mobile: Simple Progress Dots */}
+      <div className="flex md:hidden items-center gap-2 flex-1">
+        {STEP_NAMES_SHORT.map((_, idx) => (
+          <div
+            key={idx}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              idx === currentStepIndex 
+                ? 'w-6 bg-accent-cyan shadow-[0_0_8px_rgba(34,211,238,0.6)]' 
+                : idx < currentStepIndex 
+                  ? 'w-2 bg-accent-cyan/50' 
+                  : 'w-2 bg-slate-700'
+            }`}
+          />
+        ))}
+      </div>
+
+      {/* Desktop: Full Progress Timeline */}
+      <div className="hidden md:block flex-1 relative">
         {/* Step Labels */}
         <div className="absolute -top-6 left-0 w-full">
           {STEP_NAMES.map((step, idx) => {
@@ -72,27 +92,36 @@ export default function BottomControlBar({
       </div>
 
       {/* Step Info & Navigation */}
-      <div className="flex items-center gap-6 text-slate-200">
-        <div className="text-right">
+      <div className="flex items-center gap-3 md:gap-6 text-slate-200">
+        {/* Mobile: Just step number */}
+        <div className="md:hidden text-center">
+          <p className="text-xs font-bold text-accent-cyan">
+            {currentStepIndex + 1}/{totalSteps}
+          </p>
+        </div>
+        
+        {/* Desktop: Full step info */}
+        <div className="hidden md:block text-right">
           <p className="text-[10px] font-bold uppercase text-slate-500">
             Step {currentStepIndex + 1} of {totalSteps}
           </p>
           <p className="text-sm font-bold">{stepName}</p>
         </div>
+        
         <div className="flex gap-2">
           <button
             onClick={onPrevious}
             disabled={!onPrevious || currentStepIndex === 0}
-            className="size-8 rounded border border-slate-700 flex items-center justify-center hover:bg-slate-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="size-10 md:size-8 rounded border border-slate-700 flex items-center justify-center hover:bg-slate-800 active:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span className="material-symbols-outlined text-sm text-slate-400">chevron_left</span>
+            <span className="material-symbols-outlined text-base md:text-sm text-slate-400">chevron_left</span>
           </button>
           <button
             onClick={onNext}
             disabled={!onNext || currentStepIndex === totalSteps - 1}
-            className="size-8 rounded border border-slate-700 flex items-center justify-center hover:bg-slate-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="size-10 md:size-8 rounded border border-slate-700 flex items-center justify-center hover:bg-slate-800 active:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span className="material-symbols-outlined text-sm text-slate-400">chevron_right</span>
+            <span className="material-symbols-outlined text-base md:text-sm text-slate-400">chevron_right</span>
           </button>
         </div>
       </div>
