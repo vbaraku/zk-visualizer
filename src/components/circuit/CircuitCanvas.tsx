@@ -35,11 +35,10 @@ interface CircuitCanvasProps {
 
 // Register custom node types
 const nodeTypes = {
-  input: InputNode,
-  gate: GateNode,
-  output: OutputNode,
+  inputSignal: InputNode,
+  gateNode: GateNode,
+  outputSignal: OutputNode,
 }
-
 // Register custom edge types
 const edgeTypes = {
   animated: AnimatedEdge,
@@ -65,7 +64,7 @@ export default function CircuitCanvas({
         if (signal.type === 'private') {
           nodes.push({
             id: signal.id,
-            type: 'input',
+            type: 'inputSignal',
             position: layoutNode.position,
             data: {
               label: signal.name,
@@ -78,7 +77,7 @@ export default function CircuitCanvas({
         } else if (signal.type === 'public') {
           nodes.push({
             id: signal.id,
-            type: 'output',
+            type: 'outputSignal',
             position: layoutNode.position,
             data: {
               label: signal.name,
@@ -96,7 +95,7 @@ export default function CircuitCanvas({
       if (gate) {
         nodes.push({
           id: gate.id,
-          type: 'gate',
+          type: 'gateNode',
           position: layoutNode.position,
           data: {
             label: gate.type === 'mul' ? 'Multiply' : 'Add',

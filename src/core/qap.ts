@@ -99,10 +99,7 @@ export function generateSquareCircuitQAP(xValue: number): QAPData {
 /**
  * Generate animation steps for polynomial visualization
  */
-export function generatePolynomialAnimationSteps(xValue: number): PolynomialAnimationStep[] {
-  const qap = generateSquareCircuitQAP(xValue)
-  const witness = [1, xValue, xValue * xValue]
-
+export function generatePolynomialAnimationSteps(_xValue: number): PolynomialAnimationStep[] {
   const steps: PolynomialAnimationStep[] = []
 
   // Step 1: The Scaling Problem
@@ -111,150 +108,18 @@ export function generatePolynomialAnimationSteps(xValue: number): PolynomialAnim
     phase: 'scaling-problem',
     title: 'Why Polynomials?',
     description:
-      "We've converted our circuit into R1CS constraints. But checking each constraint individually doesn't scale. What if we had millions of constraints? Polynomials give us a magical property: we can encode ALL constraints into polynomial equations, then check everything with a SINGLE evaluation at a random point.",
+      "Checking each constraint individually doesn't scale. Polynomials let us encode ALL constraints and verify with a SINGLE random evaluation. This is the key insight behind succinct proofs.",
     polynomials: [],
   })
 
-  // Step 2: From R1CS to Evaluation Points
+  // Step 2: Catch the cheater demo
   steps.push({
-    id: 'r1cs-to-points',
-    phase: 'r1cs-to-points',
-    title: 'From Constraints to Points',
-    description:
-      'Each R1CS constraint gives us evaluation points for our polynomials. For our circuit with one constraint (x × x = out), we have one evaluation point where the polynomials must encode the constraint. We use Lagrange interpolation to find polynomials passing through these points.',
-    polynomials: [],
-    evaluationPoints: [
-      {
-        x: 1,
-        label: 'Constraint 1',
-        values: {
-          A: evaluate(qap.A, 1),
-          B: evaluate(qap.B, 1),
-          C: evaluate(qap.C, 1),
-        },
-      },
-    ],
-  })
-
-  // Step 3: Interpolation - Show A(x)
-  const aCurve: PolynomialCurve = {
-    id: 'A',
-    label: 'A(x) - Left Input',
-    coefficients: qap.A,
-    color: '#8B5CF6', // Purple
-    description: formatPolynomial(qap.A),
-  }
-
-  steps.push({
-    id: 'interpolation-a',
-    phase: 'interpolation',
-    title: 'Building A(x) - Left Input Polynomial',
-    description: `A(x) selects the left operand from the witness. At evaluation point x=1, A(1) = ${witness[1]} (selecting x). The polynomial A(x) = ${formatPolynomial(qap.A)}.`,
-    polynomials: [aCurve],
-    evaluationPoints: [{ x: 1, label: 'x=1', values: { A: evaluate(qap.A, 1) } }],
-    showInterpolation: true,
-  })
-
-  // Step 4: Show B(x)
-  const bCurve: PolynomialCurve = {
-    id: 'B',
-    label: 'B(x) - Right Input',
-    coefficients: qap.B,
-    color: '#3B82F6', // Blue
-    description: formatPolynomial(qap.B),
-  }
-
-  steps.push({
-    id: 'interpolation-b',
-    phase: 'interpolation',
-    title: 'Building B(x) - Right Input Polynomial',
-    description: `B(x) selects the right operand from the witness. At evaluation point x=1, B(1) = ${witness[1]} (selecting x). The polynomial B(x) = ${formatPolynomial(qap.B)}.`,
-    polynomials: [aCurve, bCurve],
-    evaluationPoints: [
-      { x: 1, label: 'x=1', values: { A: evaluate(qap.A, 1), B: evaluate(qap.B, 1) } },
-    ],
-    showInterpolation: true,
-  })
-
-  // Step 5: Show C(x)
-  const cCurve: PolynomialCurve = {
-    id: 'C',
-    label: 'C(x) - Output',
-    coefficients: qap.C,
-    color: '#22C55E', // Green
-    description: formatPolynomial(qap.C),
-  }
-
-  steps.push({
-    id: 'interpolation-c',
-    phase: 'interpolation',
-    title: 'Building C(x) - Output Polynomial',
-    description: `C(x) selects the output from the witness. At evaluation point x=1, C(1) = ${witness[2]} (selecting out = x²). The polynomial C(x) = ${formatPolynomial(qap.C)}.`,
-    polynomials: [aCurve, bCurve, cCurve],
-    evaluationPoints: [
-      {
-        x: 1,
-        label: 'x=1',
-        values: { A: evaluate(qap.A, 1), B: evaluate(qap.B, 1), C: evaluate(qap.C, 1) },
-      },
-    ],
-    showInterpolation: true,
-  })
-
-  // Step 6: The QAP Identity
-  const AB = multiply(qap.A, qap.B)
-  const ABC = subtract(AB, qap.C)
-  const HZ = multiply(qap.H, qap.Z)
-
-  const qapLeftCurve: PolynomialCurve = {
-    id: 'AB-C',
-    label: 'A(x)·B(x) - C(x)',
-    coefficients: ABC,
-    color: '#06B6D4', // Cyan
-    description: formatPolynomial(ABC),
-  }
-
-  const qapRightCurve: PolynomialCurve = {
-    id: 'HZ',
-    label: 'H(x)·Z(x)',
-    coefficients: HZ,
-    color: '#F97316', // Orange
-    description: formatPolynomial(HZ),
-  }
-
-  steps.push({
-    id: 'qap-identity',
-    phase: 'qap-identity',
-    title: 'The QAP Identity',
-    description:
-      'The key equation of ZK proofs: A(x)·B(x) - C(x) = H(x)·Z(x). Where Z(x) is the vanishing polynomial (zero at evaluation points), and H(x) is the quotient. If H(x) exists, all constraints are satisfied!',
-    polynomials: [qapLeftCurve, qapRightCurve],
-    evaluationPoints: [{ x: 1, label: 'Zero point', values: {} }],
-    showEquation: true,
-    equationParts: {
-      left: evaluate(ABC, 1),
-      right: evaluate(HZ, 1),
-      passed: Math.abs(evaluate(ABC, 1) - evaluate(HZ, 1)) < 1e-10,
-    },
-  })
-
-  // Step 7: Random Evaluation
-  const randomPoint = 5.7 // Arbitrary point for demonstration
-
-  steps.push({
-    id: 'random-check',
+    id: 'catch-cheater',
     phase: 'random-check',
-    title: 'The Power of Random Evaluation',
+    title: 'The Power of Random Checks',
     description:
-      "Here's the magic: instead of checking the polynomial identity everywhere, we check at ONE random point τ. If the prover cheated, different polynomials would almost never agree at a random point. This is why ZK proofs are SUCCINCT!",
-    polynomials: [qapLeftCurve, qapRightCurve],
-    highlightPoint: randomPoint,
-    showEquation: true,
-    equationParts: {
-      left: evaluate(ABC, randomPoint),
-      right: evaluate(HZ, randomPoint),
-      passed: Math.abs(evaluate(ABC, randomPoint) - evaluate(HZ, randomPoint)) < 1e-10,
-    },
+      "If a prover tries to cheat with a different polynomial, we catch them by checking at a random point. Two different polynomials almost never agree at a random point — this is the Schwartz-Zippel lemma.",
+    polynomials: [],
   })
 
   return steps

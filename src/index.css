@@ -85,4 +85,19 @@
   .custom-scrollbar-dark::-webkit-scrollbar-thumb:hover {
     background: #475569;
   }
+
+/* Override React Flow's default node styling */
+.react-flow__node-input,
+.react-flow__node-default,
+.react-flow__node-output,
+.react-flow__node-group {
+  padding: 0 !important;
+  border-radius: 0 !important;
+  width: auto !important;
+  font-size: inherit !important;
+  color: inherit !important;
+  text-align: inherit !important;
+  border: none !important;
+  background-color: transparent !important;
+}
 }

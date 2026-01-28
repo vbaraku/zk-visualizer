@@ -44,7 +44,7 @@ function GateNode({ data }: GateNodeProps) {
       transition={{ duration: 0.3 }}
     >
       <motion.div
-        className="bg-surface border-2 border-signal-processing rounded-lg px-6 py-4 min-w-[140px] shadow-lg"
+       className="bg-slate-800 border-2 border-signal-processing rounded-lg px-6 py-4 min-w-[140px] shadow-lg"
         style={{ opacity }}
         animate={
           isComputing

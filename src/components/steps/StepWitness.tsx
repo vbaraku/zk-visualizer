@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import NotebookPanel from '../layout/NotebookPanel'
 import CanvasPanel from '../layout/CanvasPanel'
 import BottomControlBar from '../layout/BottomControlBar'
@@ -21,8 +23,14 @@ export default function StepWitness({
   xValue,
   targetOutput,
 }: StepWitnessProps) {
-  const userOutput = xValue * xValue
-  const isCorrect = userOutput === targetOutput
+  const [viewMode, setViewMode] = useState<'prover' | 'verifier'>('prover')
+
+  // Witness vector: [1, x, out]
+  const witnessVector = [
+    { label: 'one', value: 1, index: 0, isPrivate: false, color: 'blue' },
+    { label: 'x', value: xValue, index: 1, isPrivate: true, color: 'amber' },
+    { label: 'out', value: targetOutput, index: 2, isPrivate: false, color: 'green' },
+  ]
 
   return (
     <>
@@ -30,75 +38,204 @@ export default function StepWitness({
         <h2 className="text-xl font-bold mb-4">5. The Witness</h2>
 
         <p className="text-text-light-secondary text-md leading-relaxed mb-6">
-          The witness is the complete assignment of all values (public and private) that satisfy the constraints.
-          It's the prover's secret knowledge.
+          The witness is a <strong>vector of all signal values</strong> that satisfies the circuit constraints.
+          It's the prover's secret input to proof generation.
         </p>
 
-        <div className="bg-background-light p-5 rounded-xl border-l-4 border-primary mb-8 relative">
-          <span className="absolute -right-4 -top-2 italic bg-white px-2 border rounded-md shadow-sm text-sm text-text-light-secondary">
-            Assignment
-          </span>
-          <div className="text-md space-y-2">
-            <p>Private: <span className="font-mono text-amber-600 font-bold">x = {xValue}</span> 🔒</p>
-            <p>Public: <span className="font-mono text-green-600 font-bold">out = {targetOutput}</span> 🔓</p>
+        <h3 className="text-lg font-semibold mb-3">What Does the Witness Do?</h3>
+        <div className="space-y-4 mb-6">
+          <div className="bg-background-light p-4 rounded-lg border-l-4 border-blue-500">
+            <p className="font-semibold text-blue-700 mb-1">1. Satisfies R1CS Constraints</p>
+            <p className="text-sm text-text-light-secondary">
+              The witness makes the equation true: <code className="bg-gray-100 px-1 rounded">(A·w) × (B·w) = (C·w)</code>
+            </p>
+          </div>
+          
+          <div className="bg-background-light p-4 rounded-lg border-l-4 border-purple-500">
+            <p className="font-semibold text-purple-700 mb-1">2. Input to Proof Generation</p>
+            <p className="text-sm text-text-light-secondary">
+              snarkjs uses the witness to compute polynomial evaluations and create elliptic curve points.
+            </p>
+          </div>
+          
+          <div className="bg-background-light p-4 rounded-lg border-l-4 border-green-500">
+            <p className="font-semibold text-green-700 mb-1">3. Gets Cryptographically Hidden</p>
+            <p className="text-sm text-text-light-secondary">
+              The proof "encodes" the witness, but extracting x from the proof is computationally impossible.
+            </p>
           </div>
         </div>
 
-        <h3 className="text-lg font-semibold mb-3">What is a Witness?</h3>
-        <p className="text-text-light-secondary text-md leading-relaxed mb-6">
-          The witness is the prover's secret knowledge. It includes all the private inputs and
-          intermediate values needed to satisfy the constraints. Think of it as the "solution"
-          to the puzzle that the constraints define.
-        </p>
+        <h3 className="text-lg font-semibold mb-3">Vector Format</h3>
+        <div className="bg-background-light p-4 rounded-xl border border-gray-200 mb-4 font-mono text-center text-lg">
+          <span className="text-text-light-secondary">w = [</span>
+          <span className="text-blue-600">1</span>
+          <span className="text-text-light-secondary">, </span>
+          <span className="text-amber-600">{xValue}</span>
+          <span className="text-text-light-secondary">, </span>
+          <span className="text-green-600">{targetOutput}</span>
+          <span className="text-text-light-secondary">]</span>
+        </div>
 
-        <h3 className="text-lg font-semibold mb-3">Why "Witness"?</h3>
-        <p className="text-text-light-secondary text-md leading-relaxed mb-6">
-          It's called a witness because it "witnesses" or testifies that a valid solution exists.
-          The prover uses the witness to generate the proof, but the witness itself is never
-          shared with the verifier.
-        </p>
+        <div className="space-y-1 text-sm text-text-light-secondary mb-6">
+          <p><span className="font-mono text-blue-600">w[0]=1</span> — Constant for R1CS math</p>
+          <p><span className="font-mono text-amber-600">w[1]=x</span> — Your secret (private)</p>
+          <p><span className="font-mono text-green-600">w[2]=out</span> — The target (public)</p>
+        </div>
 
-        <div className="italic text-lg mt-8 border-t border-primary/20 pt-4 flex gap-3">
-          <span className="material-symbols-outlined text-primary">edit_note</span>
-          <div>
-            <p className="mb-2 text-text-light-secondary">"We're about to generate a proof using this witness, but the proof won't contain the value of x!"</p>
-          </div>
+        <div className="italic text-md mt-4 border-t border-primary/20 pt-4 flex gap-3">
+          <span className="material-symbols-outlined text-primary">lightbulb</span>
+          <p className="text-text-light-secondary">
+            "No valid witness = no valid proof. This is why ZK proofs are secure."
+          </p>
         </div>
       </NotebookPanel>
 
       <CanvasPanel>
-        <div className="flex-1 flex items-center justify-center p-12 pb-24">
-          <div className="w-full max-w-2xl space-y-6">
-            <div className="bg-amber-400/10 border-2 border-amber-400 p-6 rounded-xl shadow-xl">
-              <p className="text-sm text-amber-400 font-bold mb-3 uppercase flex items-center gap-2">
-                <span className="material-symbols-outlined">lock</span>
-                Private
-              </p>
-              <p className="font-mono text-3xl text-text-dark-primary mb-2">x = {xValue}</p>
-              <p className="text-sm text-text-dark-secondary">This value is secret and will never be revealed</p>
+        <div className="flex-1 flex flex-col items-center justify-center p-8 pb-24">
+          {/* View Mode Toggle */}
+          <div className="mb-8">
+            <div className="bg-surface border-2 border-border-subtle rounded-full p-1 flex">
+              <button
+                onClick={() => setViewMode('prover')}
+                className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${
+                  viewMode === 'prover'
+                    ? 'bg-amber-500 text-slate-900'
+                    : 'text-text-dark-secondary hover:text-text-dark-primary'
+                }`}
+              >
+                👁 Prover's View
+              </button>
+              <button
+                onClick={() => setViewMode('verifier')}
+                className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${
+                  viewMode === 'verifier'
+                    ? 'bg-green-500 text-slate-900'
+                    : 'text-text-dark-secondary hover:text-text-dark-primary'
+                }`}
+              >
+                🔒 Verifier's View
+              </button>
             </div>
+          </div>
 
-            <div className="bg-green-500/10 border-2 border-green-500 p-6 rounded-xl shadow-xl">
-              <p className="text-sm text-green-500 font-bold mb-3 uppercase flex items-center gap-2">
-                <span className="material-symbols-outlined">lock_open</span>
-                Public (Target)
-              </p>
-              <p className="font-mono text-3xl text-text-dark-primary mb-2">out = {targetOutput}</p>
-              <p className="text-sm text-text-dark-secondary">This is the challenge value everyone knows</p>
-            </div>
+          {/* Witness Vector Visualization */}
+          <div className="w-full max-w-2xl">
+            <motion.div
+              className="bg-surface border-2 border-border-subtle rounded-2xl p-8"
+              layout
+            >
+              {/* Vector Label */}
+              <div className="text-center mb-6">
+                <span className="text-2xl font-bold text-accent-cyan font-mono">w</span>
+                <span className="text-xl text-text-dark-secondary ml-2">=</span>
+              </div>
 
-            <div className={`p-6 rounded-xl border-2 ${isCorrect ? 'bg-accent-cyan/10 border-accent-cyan' : 'bg-signal-error/10 border-signal-error'}`}>
-              <p className={`font-bold mb-3 text-lg ${isCorrect ? 'text-accent-cyan' : 'text-signal-error'}`}>
-                {isCorrect ? '✓ Witness Check:' : '✗ Witness Check:'}
-              </p>
-              <p className={`font-mono text-xl ${isCorrect ? 'text-accent-cyan' : 'text-signal-error'}`}>
-                {xValue} × {xValue} = {userOutput} {isCorrect ? '=' : '≠'} {targetOutput}
-              </p>
-              <p className="text-sm mt-3 text-text-dark-secondary">
-                {isCorrect
-                  ? 'The witness satisfies all constraints! You can generate a valid proof.'
-                  : `The witness does NOT satisfy the constraints (${userOutput} ≠ ${targetOutput}). Proof generation will fail.`}
-              </p>
+              {/* Vector Elements */}
+              <div className="flex items-center justify-center gap-2">
+                <span className="text-4xl text-text-dark-secondary font-mono">[</span>
+                
+                {witnessVector.map((item, idx) => (
+                  <div key={item.label} className="flex items-center">
+                    <motion.div
+                      className="flex flex-col items-center"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                    >
+                      {/* Label */}
+                      <span className={`text-xs font-mono mb-2 ${
+                        item.color === 'blue' ? 'text-blue-400' :
+                        item.color === 'amber' ? 'text-amber-400' : 'text-green-400'
+                      }`}>
+                        {item.label}
+                      </span>
+                      
+                      {/* Value Box */}
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={`${item.label}-${viewMode}`}
+                          initial={{ rotateY: 90, opacity: 0 }}
+                          animate={{ rotateY: 0, opacity: 1 }}
+                          exit={{ rotateY: -90, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className={`w-20 h-20 rounded-xl flex items-center justify-center font-mono text-2xl font-bold border-2 ${
+                            item.isPrivate && viewMode === 'verifier'
+                              ? 'bg-slate-800 border-slate-600 text-slate-500'
+                              : item.color === 'blue'
+                                ? 'bg-blue-500/20 border-blue-500 text-blue-400'
+                                : item.color === 'amber'
+                                  ? 'bg-amber-500/20 border-amber-500 text-amber-400'
+                                  : 'bg-green-500/20 border-green-500 text-green-400'
+                          }`}
+                        >
+                          {item.isPrivate && viewMode === 'verifier' ? '?' : item.value}
+                        </motion.div>
+                      </AnimatePresence>
+                      
+                      {/* Privacy Indicator */}
+                      <span className={`text-xs mt-2 ${
+                        item.isPrivate ? 'text-amber-400' : 'text-green-400'
+                      }`}>
+                        {item.isPrivate ? '🔒 private' : '🔓 public'}
+                      </span>
+                    </motion.div>
+                    
+                    {/* Comma separator */}
+                    {idx < witnessVector.length - 1 && (
+                      <span className="text-2xl text-text-dark-secondary font-mono mx-2">,</span>
+                    )}
+                  </div>
+                ))}
+                
+                <span className="text-4xl text-text-dark-secondary font-mono">]</span>
+              </div>
+
+              {/* View Mode Description */}
+              <motion.div
+                key={viewMode}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mt-8 text-center"
+              >
+                {viewMode === 'prover' ? (
+                  <p className="text-amber-400 text-sm">
+                    <span className="font-bold">Prover knows everything:</span> x = {xValue} enables proof generation.
+                  </p>
+                ) : (
+                  <p className="text-green-400 text-sm">
+                    <span className="font-bold">Verifier only sees public values:</span> x is hidden, but proof still verifies!
+                  </p>
+                )}
+              </motion.div>
+            </motion.div>
+
+            {/* Flow Diagram: Witness → Proof */}
+            <div className="mt-8 flex items-center justify-center gap-4">
+              <div className="bg-surface border border-border-subtle rounded-lg px-4 py-2 text-sm">
+                <span className="text-amber-400 font-mono">witness</span>
+              </div>
+              <motion.div
+                animate={{ x: [0, 5, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+                className="text-accent-cyan text-2xl"
+              >
+                →
+              </motion.div>
+              <div className="bg-surface border border-border-subtle rounded-lg px-4 py-2 text-sm">
+                <span className="text-text-dark-secondary">snarkjs.groth16.prove()</span>
+              </div>
+              <motion.div
+                animate={{ x: [0, 5, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5, delay: 0.3 }}
+                className="text-accent-cyan text-2xl"
+              >
+                →
+              </motion.div>
+              <div className="bg-surface border border-border-subtle rounded-lg px-4 py-2 text-sm">
+                <span className="text-green-400 font-mono">proof</span>
+                <span className="text-text-dark-secondary ml-1">(x hidden)</span>
+              </div>
             </div>
           </div>
         </div>

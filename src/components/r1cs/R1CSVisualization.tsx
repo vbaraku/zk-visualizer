@@ -1,14 +1,11 @@
 /**
  * R1CSVisualization - Main container for R1CS transformation animation
- *
- * Shows side-by-side circuit and matrices, with step-by-step construction
  */
 
 import { useMemo } from 'react'
 import MatrixView from './MatrixView'
 import WitnessVector from './WitnessVector'
 import ConstraintEquation from './ConstraintEquation'
-import CircuitMiniView from './CircuitMiniView'
 import AnimationControls from '../circuit/AnimationControls'
 import { useR1CSAnimation } from '../../hooks/useR1CSAnimation'
 import {
@@ -27,18 +24,10 @@ export default function R1CSVisualization({ xValue, targetOutput: _targetOutput 
   const witness = [1, xValue, xValue * xValue]
   const witnessLabels = ['1', 'x', 'out']
 
-  // Generate animation steps
   const animationSteps = useMemo(() => generateR1CSAnimationSteps(xValue), [xValue])
-
-  // Animation controller
-  const animation = useR1CSAnimation({
-    steps: animationSteps,
-  })
-
-  // Current step data
+  const animation = useR1CSAnimation({ steps: animationSteps })
   const currentStepData = animationSteps[animation.currentStep]
 
-  // Compute dot products when needed
   const aDotW = useMemo(
     () => computeDotProduct(constraint.a, witness, witnessLabels),
     [constraint.a, witness, witnessLabels]
@@ -54,7 +43,7 @@ export default function R1CSVisualization({ xValue, targetOutput: _targetOutput 
 
   return (
     <div className="space-y-6">
-      {/* Animation Controls - at the top */}
+      {/* Animation Controls */}
       <AnimationControls
         currentStep={animation.currentStep}
         totalSteps={animation.totalSteps}
@@ -69,82 +58,66 @@ export default function R1CSVisualization({ xValue, targetOutput: _targetOutput 
       />
 
       {/* Step Title and Description */}
-      <div className="bg-accent-primary/10 border-l-4 border-accent-primary p-6 rounded">
-        <h3 className="text-xl font-semibold text-text-primary mb-2">
+      <div className="bg-accent-cyan/10 border-l-4 border-accent-cyan p-4 rounded">
+        <h3 className="text-lg font-semibold text-text-dark-primary mb-1">
           {currentStepData.title}
         </h3>
-        <p className="text-text-secondary">{currentStepData.description}</p>
+        <p className="text-text-dark-secondary text-sm">{currentStepData.description}</p>
       </div>
 
-      {/* Main Content: Circuit + Matrices */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left: Circuit Mini View */}
-        <div className="bg-surface border-2 border-border-subtle rounded-lg p-6">
-          <h4 className="text-lg font-semibold text-text-primary mb-4 text-center">
-            Circuit View
-          </h4>
-          <CircuitMiniView highlightedNodes={currentStepData.circuitHighlight} />
-          <div className="mt-4 text-sm text-text-secondary text-center">
-            x × x = out
-          </div>
-        </div>
+      {/* Circuit Reminder */}
+      <div className="text-center text-text-dark-secondary text-sm">
+        Our constraint: <span className="font-mono text-text-dark-primary">x × x = out</span>
+      </div>
 
-        {/* Right: Matrices */}
-        <div className="space-y-4">
-          <h4 className="text-lg font-semibold text-text-primary text-center">
-            R1CS Matrices
-          </h4>
+      {/* Witness Vector */}
+      <WitnessVector
+        labels={witnessLabels}
+        values={witness}
+        highlighted={
+          currentStepData.matrixAHighlight !== undefined
+            ? currentStepData.matrixAHighlight
+            : currentStepData.matrixCHighlight
+        }
+      />
 
-          {/* Witness Vector */}
-          <WitnessVector
-            labels={witnessLabels}
-            values={witness}
-            highlighted={
-              currentStepData.matrixAHighlight !== undefined
-                ? currentStepData.matrixAHighlight
-                : currentStepData.matrixCHighlight
-            }
-          />
+      {/* Three Matrices */}
+      <div className="grid grid-cols-3 gap-4">
+        <MatrixView
+          label="A (Left)"
+          values={constraint.a}
+          witnessLabels={witnessLabels}
+          witnessValues={witness}
+          highlighted={currentStepData.matrixAHighlight}
+          showDotProduct={currentStepData.showDotProducts}
+          dotProductResult={currentStepData.showDotProducts ? aDotW : undefined}
+          color="purple"
+          visible={currentStepData.matrixAVisible}
+        />
 
-          {/* Three Matrices */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <MatrixView
-              label="A (Left)"
-              values={constraint.a}
-              witnessLabels={witnessLabels}
-              witnessValues={witness}
-              highlighted={currentStepData.matrixAHighlight}
-              showDotProduct={currentStepData.showDotProducts}
-              dotProductResult={currentStepData.showDotProducts ? aDotW : undefined}
-              color="purple"
-              visible={currentStepData.matrixAVisible}
-            />
+        <MatrixView
+          label="B (Right)"
+          values={constraint.b}
+          witnessLabels={witnessLabels}
+          witnessValues={witness}
+          highlighted={currentStepData.matrixBHighlight}
+          showDotProduct={currentStepData.showDotProducts}
+          dotProductResult={currentStepData.showDotProducts ? bDotW : undefined}
+          color="blue"
+          visible={currentStepData.matrixBVisible}
+        />
 
-            <MatrixView
-              label="B (Right)"
-              values={constraint.b}
-              witnessLabels={witnessLabels}
-              witnessValues={witness}
-              highlighted={currentStepData.matrixBHighlight}
-              showDotProduct={currentStepData.showDotProducts}
-              dotProductResult={currentStepData.showDotProducts ? bDotW : undefined}
-              color="blue"
-              visible={currentStepData.matrixBVisible}
-            />
-
-            <MatrixView
-              label="C (Output)"
-              values={constraint.c}
-              witnessLabels={witnessLabels}
-              witnessValues={witness}
-              highlighted={currentStepData.matrixCHighlight}
-              showDotProduct={currentStepData.showDotProducts}
-              dotProductResult={currentStepData.showDotProducts ? cDotW : undefined}
-              color="green"
-              visible={currentStepData.matrixCVisible}
-            />
-          </div>
-        </div>
+        <MatrixView
+          label="C (Output)"
+          values={constraint.c}
+          witnessLabels={witnessLabels}
+          witnessValues={witness}
+          highlighted={currentStepData.matrixCHighlight}
+          showDotProduct={currentStepData.showDotProducts}
+          dotProductResult={currentStepData.showDotProducts ? cDotW : undefined}
+          color="green"
+          visible={currentStepData.matrixCVisible}
+        />
       </div>
 
       {/* Constraint Equation */}
