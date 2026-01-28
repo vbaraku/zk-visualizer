@@ -98,7 +98,7 @@ export default function LandingPage({ onStartVisualizer }: LandingPageProps) {
             <div className="space-y-6 text-lg text-text-light-secondary leading-relaxed">
               <p>
                 In a world where data is the new oil, privacy has become an endangered species.
-                Zero-Knowledge Proofs represent a paradigm shift—they let you prove truths
+                Zero-Knowledge Proofs represent a paradigm shift, they let you prove truths
                 without exposing the underlying data.
               </p>
               <p>
