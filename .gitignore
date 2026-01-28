@@ -146,3 +146,4 @@ circuits/*.wasm
 circuits/*.zkey
 circuits/verification_key.json
 circuits/public/
+.vercel

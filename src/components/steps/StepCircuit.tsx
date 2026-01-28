@@ -72,15 +72,6 @@ export default function StepCircuit({
     [computationSteps, animation.currentStep]
   )
 
-  // Complete witness values (for final state)
-  const completeWitnessValues = useMemo(
-    () => ({
-      x: xValue,
-      out: xValue * xValue,
-    }),
-    [xValue]
-  )
-
   // Initial state: show "?"
   const initialWitnessValues = useMemo(() => ({ x: xValue, out: '?' as any }), [xValue])
 
