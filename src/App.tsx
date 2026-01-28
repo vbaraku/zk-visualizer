@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Analytics } from '@vercel/analytics/react'
 import StepContainer from './components/StepContainer'
 import LearnMore from './pages/LearnMore'
 import LandingPage from './pages/LandingPage'
@@ -110,6 +111,9 @@ function App() {
 
       {/* Main Content */}
       {renderPage()}
+      
+      {/* Vercel Analytics */}
+      <Analytics />
     </div>
   )
 }
