@@ -46,14 +46,6 @@ export default function StepConstraints({
           </div>
         </div>
 
-        <h3 className="text-lg font-semibold mb-3">Your Values</h3>
-        <div className="space-y-2 text-sm mb-6">
-          <p>Input (x): <span className="font-mono text-primary font-bold">{xValue}</span></p>
-          <p>Computed (x²): <span className="font-mono font-bold">{userOutput}</span></p>
-          <p>Target: <span className="font-mono font-bold">{targetOutput}</span></p>
-          <p>Valid? <span className={isCorrect ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}>{isCorrect ? '✓ Yes' : '✗ No'}</span></p>
-        </div>
-
         {!isCorrect && (
           <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
             <p className="text-red-700 text-sm">
@@ -95,7 +87,7 @@ export default function StepConstraints({
       </NotebookPanel>
 
       <CanvasPanel>
-        <div className="flex-1 p-6 pb-24">
+        <div className="flex-1 overflow-y-auto custom-scrollbar-dark p-6 pb-24">
           <R1CSVisualization xValue={xValue} targetOutput={targetOutput} />
         </div>
 

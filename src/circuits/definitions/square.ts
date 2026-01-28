@@ -31,7 +31,7 @@ export const squareCircuit: CircuitDefinition = {
       id: 'x',
       name: 'x',
       type: 'private',
-      description: 'Secret input - the number you know',
+      description: 'Secret input',
     },
     {
       id: 'out',

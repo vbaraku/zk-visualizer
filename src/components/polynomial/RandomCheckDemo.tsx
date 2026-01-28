@@ -50,9 +50,6 @@ export default function RandomCheckDemo() {
 
   return (
     <div className="bg-surface border-2 border-border-subtle rounded-lg p-6">
-      <h3 className="text-xl font-semibold text-text-primary mb-4">
-        Demo: Catch the Cheater
-      </h3>
 
       <div className="mb-4 p-4 bg-accent-primary/10 border-l-4 border-accent-primary rounded">
         <p className="text-text-secondary text-sm">

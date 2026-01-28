@@ -72,6 +72,7 @@ export default function InterpolationAnimator({
             domain={xRange}
             stroke="#94a3b8"
             tick={{ fill: '#94a3b8', fontSize: 12 }}
+            tickFormatter={(value: number) => Number.isInteger(value) ? value.toString() : value.toFixed(1)}
           />
 
           <YAxis

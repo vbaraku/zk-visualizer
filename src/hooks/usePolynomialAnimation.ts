@@ -27,9 +27,9 @@ interface UsePolynomialAnimationReturn {
 }
 
 const SPEED_SETTINGS: Record<AnimationSpeed, number> = {
-  slow: 2500, // Slower for polynomial concepts
-  normal: 1500,
-  fast: 800,
+  slow: 4000,
+  normal: 2500,
+  fast: 1500,
 }
 
 export function usePolynomialAnimation({

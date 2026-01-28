@@ -1,27 +1,36 @@
 # ZK Visualizer
 
-Learn how zero-knowledge proofs work by watching them happen. An interactive educational tool that visualizes circuit construction, witness generation, and proof verification step-by-step.
+Learn how zero-knowledge proofs work by watching them happen. An interactive educational tool that visualizes the entire ZK proof pipeline — from problem statement to verification.
 
-## About
+![ZK Visualizer](https://img.shields.io/badge/status-beta-blue) ![React](https://img.shields.io/badge/React-18-61dafb) ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6)
 
-ZK Visualizer helps beginners understand zero-knowledge proofs by breaking down the process into simple, visual steps. Instead of reading abstract explanations, you can see exactly how a ZK proof works from start to finish.
+## Why This Exists
 
-## Features (MVP)
+The ZK education space has plenty of code tools and theoretical explanations, but nothing that shows you **what actually happens** when a proof is generated. ZK Visualizer bridges that gap with:
 
-- 📚 **Step-by-step walkthrough**: Six clear steps from problem to verification
-- 🎯 **Simple example**: Prove you know a number x where x² = 9
-- 🎨 **Clean UI**: Built with React, TypeScript, and Tailwind CSS
-- 🔒 **Zero-knowledge**: See how proofs work without revealing secrets
-- 🌐 **Browser-based**: All ZK operations run in your browser (via snarkjs)
+- **Real cryptography** via snarkjs (not simulations)
+- **Step-by-step visibility** into the entire pipeline
+- **Interactive demos** that make abstract concepts tangible
 
-## The Six Steps
+## Features
 
-1. **The Problem** - What are we trying to prove?
-2. **The Circuit** - How do we represent the computation?
-3. **The Constraints** - Mathematical rules that must be satisfied
-4. **The Witness** - Private input assignment
-5. **Proof Generation** - Creating the zero-knowledge proof
-6. **Verification** - Verifying without revealing secrets
+- 🎯 **7-Step Educational Journey**: Problem → Circuit → R1CS → Polynomials → Witness → Proof → Verification
+- 🔐 **Real ZK Proofs**: Actual Groth16 proofs generated in your browser via snarkjs
+- 📊 **Animated Visualizations**: Watch circuit evaluation, constraint checking, and verification unfold
+- 👁️ **Prover/Verifier Perspectives**: Toggle between what each party knows
+- 🧪 **Tamper Detection Demo**: See verification fail when data is modified
+
+## The Seven Steps
+
+| Step | Name | What You Learn |
+|------|------|----------------|
+| 1 | **Problem** | Frame the ZK problem: prove you know x where x² = 9 |
+| 2 | **Circuit** | See the computation as a circuit with animated signal flow |
+| 3 | **Constraints** | Watch R1CS matrices transform the circuit into math |
+| 4 | **Polynomials** | Understand why polynomials enable succinct proofs |
+| 5 | **Witness** | See the prover's secret vs. what the verifier knows |
+| 6 | **Proof** | Generate a real Groth16 proof and inspect its structure |
+| 7 | **Verification** | Verify the proof and test tamper detection |
 
 ## Getting Started
 
@@ -32,60 +41,93 @@ ZK Visualizer helps beginners understand zero-knowledge proofs by breaking down 
 ### Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/vbaraku/zk-visualizer.git
+cd zk-visualizer
+
 # Install dependencies
 npm install
 
 # Run development server
 npm run dev
-
-# Build for production
-npm run build
 ```
 
-### View the App
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-Open your browser to `http://localhost:5173` after running `npm run dev`.
+### Build for Production
+
+```bash
+npm run build
+npm run preview
+```
 
 ## Project Structure
 
 ```
 zk-visualizer/
-├── circuits/           # Circom circuit files
-│   └── square.circom   # x² = 9 circuit
+├── circuits/                    # Circom circuit files
+│   └── square.circom            # x² = y circuit
+├── public/
+│   └── circuits/                # Compiled circuit artifacts (wasm, zkey, vkey)
 ├── src/
-│   ├── components/     # React components
-│   │   ├── steps/      # Step-by-step components
-│   │   └── StepContainer.tsx
-│   ├── types/          # TypeScript type definitions
-│   ├── utils/          # ZK proof utilities (snarkjs)
-│   ├── App.tsx         # Main application
-│   └── main.tsx        # Entry point
+│   ├── components/
+│   │   ├── circuit/             # Circuit visualization (React Flow)
+│   │   ├── r1cs/                # R1CS matrix visualization
+│   │   ├── polynomial/          # Polynomial plots (D3.js)
+│   │   ├── layout/              # NotebookPanel, CanvasPanel, BottomControlBar
+│   │   └── steps/               # Step components (StepProblem, StepCircuit, etc.)
+│   ├── core/                    # Core logic (witness computation, QAP)
+│   ├── hooks/                   # Custom React hooks (animations)
+│   ├── stores/                  # Zustand state management
+│   ├── types/                   # TypeScript definitions
+│   ├── utils/                   # snarkjs wrapper, helpers
+│   ├── App.tsx
+│   └── main.tsx
 └── package.json
 ```
 
 ## Tech Stack
 
-- **Frontend**: React 18 + TypeScript
-- **Build Tool**: Vite
-- **Styling**: Tailwind CSS
-- **ZK Proofs**: snarkjs + Circom
-- **Proof System**: Groth16
+| Category | Technology |
+|----------|------------|
+| Framework | React 18 + TypeScript |
+| Build | Vite |
+| Styling | Tailwind CSS |
+| State | Zustand |
+| Circuit Viz | React Flow |
+| Graphs | D3.js |
+| Animations | Framer Motion |
+| ZK Proofs | snarkjs + Circom |
+| Proof System | Groth16 |
 
-## Next Steps
+## How It Works
 
-For the full MVP with working ZK proofs:
+1. **Circuit Definition**: A simple Circom circuit (`x * x === y`) is pre-compiled
+2. **Witness Generation**: User inputs are used to compute all signal values
+3. **R1CS Check**: The witness is validated against constraint matrices
+4. **Proof Generation**: snarkjs creates a Groth16 proof (3 elliptic curve points)
+5. **Verification**: The proof is verified using pairing checks
 
-1. Compile the Circom circuit to WASM
-2. Generate proving and verification keys
-3. Integrate real snarkjs proof generation
-4. Add circuit visualization
-5. Create interactive parameter inputs
+All cryptographic operations happen in the browser — no server required.
 
-## Learn More
+## Roadmap
+
+- [ ] Additional circuits (range proof, hash preimage, Merkle proof)
+- [ ] "Break It" mode — explore what happens with invalid witnesses
+- [ ] Circuit builder — create your own circuits
+- [ ] Side-by-side proof system comparison (Groth16 vs PLONK)
+- [ ] Export/share functionality
+
+## Learning Resources
 
 - [Circom Documentation](https://docs.circom.io/)
-- [snarkjs](https://github.com/iden3/snarkjs)
-- [Zero-Knowledge Proofs](https://en.wikipedia.org/wiki/Zero-knowledge_proof)
+- [snarkjs GitHub](https://github.com/iden3/snarkjs)
+- [RareSkills ZK Book](https://www.rareskills.io/zk-book)
+- [Vitalik's SNARK Explainer](https://vitalik.eth.limo/general/2021/01/26/snarks.html)
+
+## Contributing
+
+Contributions welcome! Please open an issue first to discuss what you'd like to change.
 
 ## License
 

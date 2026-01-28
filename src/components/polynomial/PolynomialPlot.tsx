@@ -37,7 +37,7 @@ export default function PolynomialPlot({
   xRange = [-2, 10],
   yRange,
   showGrid = true,
-  height = 400,
+  height = 280,
 }: PolynomialPlotProps) {
   // Generate plot data
   const plotData = useMemo(() => {
@@ -96,6 +96,8 @@ export default function PolynomialPlot({
             dataKey="x"
             stroke="#94a3b8"
             tick={{ fill: '#94a3b8', fontSize: 12 }}
+            tickFormatter={(value: number) => Number.isInteger(value) ? value.toString() : ''}
+            ticks={Array.from({ length: 12 }, (_, i) => i - 1)}
             label={{ value: 'x', position: 'insideBottomRight', offset: -5, fill: '#94a3b8' }}
           />
 

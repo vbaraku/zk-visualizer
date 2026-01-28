@@ -6,7 +6,12 @@ import CircuitCanvas from '../circuit/CircuitCanvas'
 import AnimationControls from '../circuit/AnimationControls'
 import ComputationLog from '../circuit/ComputationLog'
 import { getDefaultCircuit } from '../../circuits'
-import { generateComputationSteps, getNodeStatesAtStep, getEdgeStatesAtStep, getWitnessAtStep } from '../../core/witness'
+import {
+  generateComputationSteps,
+  getNodeStatesAtStep,
+  getEdgeStatesAtStep,
+  getWitnessAtStep,
+} from '../../core/witness'
 import { useWitnessAnimation } from '../../hooks/useWitnessAnimation'
 
 interface StepCircuitProps {
@@ -32,14 +37,13 @@ export default function StepCircuit({
   const userOutput = xValue * xValue
   const isCorrect = userOutput === targetOutput
 
-  // Input control state
-  const [inputValue, setInputValue] = useState(xValue)
-  const [showAnimation, setShowAnimation] = useState(false)
+  // Animation state
+  const [hasStartedAnimation, setHasStartedAnimation] = useState(false)
 
-  // Generate computation steps based on current input
+  // Generate computation steps based on xValue from props (not editable here)
   const computationSteps = useMemo(
-    () => generateComputationSteps(circuit, { x: inputValue }),
-    [circuit, inputValue]
+    () => generateComputationSteps(circuit, { x: xValue }),
+    [circuit, xValue]
   )
 
   // Animation controller
@@ -71,18 +75,52 @@ export default function StepCircuit({
   // Complete witness values (for final state)
   const completeWitnessValues = useMemo(
     () => ({
-      x: inputValue,
-      out: inputValue * inputValue,
+      x: xValue,
+      out: xValue * xValue,
     }),
-    [inputValue]
+    [xValue]
   )
 
-  // Handle input value change - reset animation
-  const handleInputChange = (newValue: number) => {
-    setInputValue(newValue)
-    animation.reset()
-    setShowAnimation(false)
+  // Initial state: show "?" for values that haven't been computed
+  const initialWitnessValues = useMemo(
+    () => ({
+      x: xValue, // Input is known
+    }),
+    [xValue]
+  )
+
+  // Handle play - track that animation has started
+  const handlePlay = () => {
+    setHasStartedAnimation(true)
+    animation.play()
   }
+
+  // Handle reset
+  const handleReset = () => {
+    setHasStartedAnimation(false)
+    animation.reset()
+  }
+
+  // Determine which witness values to show
+  const displayWitnessValues = useMemo(() => {
+    if (!hasStartedAnimation) {
+      // Before animation: show input, output as "?"
+      return initialWitnessValues
+    }
+    if (animation.currentStep >= computationSteps.length - 1) {
+      // Animation complete: show final values
+      return completeWitnessValues
+    }
+    // During animation: show current step values
+    return witnessValues
+  }, [
+    hasStartedAnimation,
+    animation.currentStep,
+    computationSteps.length,
+    initialWitnessValues,
+    completeWitnessValues,
+    witnessValues,
+  ])
 
   return (
     <>
@@ -90,122 +128,137 @@ export default function StepCircuit({
         <h2 className="text-xl font-bold mb-4">2. The Circuit</h2>
 
         <p className="text-text-light-secondary text-md leading-relaxed mb-6">
-          A circuit is a way to represent a computation using basic operations (addition, multiplication).
-          Think of it like a flowchart for math operations.
+          A circuit is a way to represent a computation using basic operations (addition,
+          multiplication). Think of it like a flowchart for math operations.
         </p>
 
         <div className="bg-background-light p-5 rounded-xl border-l-4 border-primary mb-8 relative">
           <span className="absolute -right-4 -top-2 italic bg-white px-2 border rounded-md shadow-sm text-sm text-text-light-secondary">
             Our Circuit
           </span>
-          <div className="text-md space-y-2">
-            <p>Input: <span className="text-primary font-mono">x = {xValue}</span> (private 🔒)</p>
-            <p>Operation: <span className="text-primary">x × x</span></p>
-            <p>Output: <span className="text-primary font-mono">out = {userOutput}</span> (public)</p>
+          <div className="text-md space-y-2 font-mono">
+            <p>
+              Input: <span className="text-amber-600">x = {xValue}</span> (private 🔒)
+            </p>
+            <p>
+              Operation: <span className="text-primary">x × x</span>
+            </p>
+            <p>
+              Output: <span className="text-green-600">out = {userOutput}</span> (public)
+            </p>
           </div>
         </div>
 
-        <h3 className="text-lg font-semibold mb-3">Privacy in the Circuit</h3>
+        <h3 className="text-lg font-semibold mb-3">How Circuits Work</h3>
         <p className="text-text-light-secondary text-md leading-relaxed mb-6">
-          Notice how the input <code className="px-2 py-1 bg-amber-100 rounded text-amber-800 font-mono text-sm">x</code> is marked as private (🔒)
-          while the output <code className={`px-2 py-1 rounded font-mono text-sm ${
-            isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-          }`}>out</code> is public.
+          Values flow through the circuit from inputs to outputs. Each gate performs an operation.
+          Press <strong>Play</strong> to watch the computation happen step by step.
         </p>
 
         <h3 className="text-lg font-semibold mb-3">Circuit Code (Circom)</h3>
-        <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm border border-slate-700 mb-6">
-{`template Square() {
-    signal private input x;
-    signal output out;
-    out <== x * x;
-}`}
-        </pre>
+        <div className="bg-slate-900 p-4 rounded-lg mb-6 overflow-x-auto">
+          <pre className="text-sm text-slate-300 font-mono">
+            <code>
+              <span className="text-purple-400">template</span>{' '}
+              <span className="text-yellow-300">Square</span>() {'{'}
+              {'\n'}
+              {'    '}
+              <span className="text-purple-400">signal</span>{' '}
+              <span className="text-blue-400">private</span>{' '}
+              <span className="text-purple-400">input</span> x;
+              <span className="text-slate-500"> // Your secret</span>
+              {'\n'}
+              {'    '}
+              <span className="text-purple-400">signal</span>{' '}
+              <span className="text-purple-400">output</span> out;
+              <span className="text-slate-500"> // Public result</span>
+              {'\n'}
+              {'    '}out <span className="text-cyan-400">{'<==='}</span> x * x;
+              <span className="text-slate-500"> // Constraint + assignment</span>
+              {'\n'}
+              {'}'}
+            </code>
+          </pre>
+        </div>
 
         <div className="italic text-lg mt-8 border-t border-primary/20 pt-4 flex gap-3">
           <span className="material-symbols-outlined text-primary">edit_note</span>
-          <div>
-            <p className="mb-2 text-text-light-secondary">"The circuit defines what computation is performed, while keeping the inputs private."</p>
-          </div>
+          <p className="text-text-light-secondary">
+            "The circuit defines <em>what</em> computation is performed, while keeping the inputs
+            private."
+          </p>
         </div>
       </NotebookPanel>
 
       <CanvasPanel>
         <div className="flex-1 flex flex-col p-6 pb-24">
-          {/* Animation Controls - always visible at top */}
+          {/* Animation Controls */}
           <div className="mb-4">
             <AnimationControls
               currentStep={animation.currentStep}
               totalSteps={animation.totalSteps}
               isPlaying={animation.isPlaying}
               speed={animation.speed}
-              onPlay={() => {
-                if (!showAnimation) {
-                  setShowAnimation(true)
-                  animation.reset()
-                }
-                animation.play()
-              }}
+              onPlay={handlePlay}
               onPause={animation.pause}
-              onReset={animation.reset}
-              onStepForward={animation.stepForward}
+              onReset={handleReset}
+              onStepForward={() => {
+                setHasStartedAnimation(true)
+                animation.stepForward()
+              }}
               onStepBack={animation.stepBack}
               onSpeedChange={animation.setSpeed}
             />
           </div>
 
-          {/* Input Controls Panel */}
-          <div className="bg-surface border-2 border-border-subtle rounded-lg p-5 mb-4">
-            <h4 className="text-sm font-semibold text-text-dark-primary mb-4">Input Controls</h4>
-            <div className="space-y-4">
-              <div>
-                <label className="text-xs text-text-dark-secondary mb-2 block font-semibold">
-                  x (private input):
-                </label>
-                <input
-                  type="number"
-                  value={inputValue}
-                  onChange={(e) => handleInputChange(Number(e.target.value))}
-                  className="w-full bg-background-dark-canvas border-2 border-border-subtle rounded-lg px-3 py-2 text-text-dark-primary font-mono text-lg focus:outline-none focus:border-accent-cyan transition-colors"
-                />
+          {/* Context Bar - shows current values (read-only) */}
+          <div className="bg-surface border-2 border-border-subtle rounded-lg p-4 mb-4">
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
+                  <span className="text-amber-400">🔒</span>
+                  <span className="text-text-dark-secondary">Private input:</span>
+                  <span className="font-mono font-bold text-amber-400">x = {xValue}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-green-400">👁️</span>
+                  <span className="text-text-dark-secondary">Target output:</span>
+                  <span className="font-mono font-bold text-green-400">out = {targetOutput}</span>
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 text-sm text-text-dark-secondary">
-                <div className="flex justify-between">
-                  <span>Output (x²):</span>
-                  <span className="font-mono font-bold text-text-dark-primary">
-                    {inputValue * inputValue}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Target:</span>
-                  <span className="font-mono font-bold text-text-dark-primary">
-                    {targetOutput}
-                  </span>
-                </div>
+              <div
+                className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                  isCorrect
+                    ? 'bg-accent-cyan/20 text-accent-cyan'
+                    : 'bg-signal-error/20 text-signal-error'
+                }`}
+              >
+                {isCorrect ? '✓ Valid' : '✗ Invalid'}
               </div>
             </div>
           </div>
 
-          {/* Circuit Visualization */}
-          <div className="flex-1">
+          {/* Circuit Visualization - main hero */}
+          <div className="flex-1 overflow-y-auto custom-scrollbar-dark min-h-[300px]">
             <CircuitCanvas
               circuit={circuit}
-              witnessValues={showAnimation ? witnessValues : completeWitnessValues}
+              witnessValues={displayWitnessValues}
               targetOutput={targetOutput}
-              nodeStates={showAnimation ? nodeStates : undefined}
-              edgeStates={showAnimation ? edgeStates : undefined}
+              nodeStates={hasStartedAnimation ? nodeStates : undefined}
+              edgeStates={hasStartedAnimation ? edgeStates : undefined}
             />
           </div>
 
-          {/* Computation Log - only show if animating */}
-          {showAnimation && (
-            <div className="mt-4 max-h-48 overflow-y-auto custom-scrollbar-dark">
-              <ComputationLog
-                steps={computationSteps}
-                currentStep={animation.currentStep}
-              />
-            </div>
-          )}
+          {/* Computation Log - always visible */}
+          <div className="mt-4 bg-surface border-2 border-border-subtle rounded-lg p-4">
+            {!hasStartedAnimation ? (
+              <p className="text-text-dark-secondary text-sm">
+                Press <strong>Play</strong> to watch values flow through the circuit...
+              </p>
+            ) : (
+              <ComputationLog steps={computationSteps} currentStep={animation.currentStep} />
+            )}
+          </div>
         </div>
 
         <BottomControlBar
